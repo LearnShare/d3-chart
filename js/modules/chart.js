@@ -16,7 +16,7 @@ var Chart = (function() {
       height: config.height
           || config.target.clientHeight,
       padding: config.padding
-          || 0,
+          || 10,
       autoResize: config.autoResize
           || false,
 
@@ -76,7 +76,7 @@ var Chart = (function() {
     self.config.target.innerHTML = '';
 
     // svg
-    var svg = d3.select(self.config.target)
+    self.svg = d3.select(self.config.target)
         .append('svg')
             .attr('width', self.config.width)
             .attr('height', self.config.height);
@@ -91,7 +91,35 @@ var Chart = (function() {
   };
   Chart.prototype.drawTitle = function(data) {
     var self = this;
-    //
+    
+    // title is empty
+    if(!self.config.title.length) {
+      return;
+    }
+
+    // title start x
+    var titleX = 0;
+    // title align
+    var titleAlign = 'middle';
+
+    // center
+    titleX = self.config.width / 2;
+    // left
+    if(self.config.titleAlign == 'left') {
+      titleX = self.config.padding;
+      titleAlign = 'start';
+    }
+    // right
+    if(self.config.titleAlign == 'right') {
+      titleX = self.config.width
+          - self.config.padding;
+      titleAlign = 'end';
+    }
+
+    console.log(titleX, titleAlign);
+
+    var titleGroup = self.svg.append('g')
+        .attr('class', 'title');
   };
   Chart.prototype.drawLegend = function(data) {
     var self = this;
@@ -100,6 +128,9 @@ var Chart = (function() {
   
   Chart.prototype.resize = function(data) {
     var self = this;
+
+    self.config.width = self.config.target.clientWidth;
+    self.config.height = self.config.target.clientHeight;
 
     self.draw();
   };
