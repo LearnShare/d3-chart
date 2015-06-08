@@ -106,7 +106,6 @@ var Chart = (function() {
   };
   Chart.prototype.drawChart = function(data) {
     var self = this;
-    //
   };
   Chart.prototype.drawTitle = function(data) {
     var self = this;
@@ -240,3 +239,17 @@ var Chart = (function() {
   
   return Chart;
 })();
+
+var __extends = this.__extends ||
+  function (d, b) {
+    for (var p in b) {
+      if (b.hasOwnProperty(p)) {
+        d[p] = b[p];
+      }
+    }
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
