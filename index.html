@@ -24,14 +24,16 @@
 
       var chart = new Chart({
         target: target, // DOM element
+        padding: 10,
         autoResize: true, // true|false
         title: 'D3-Chart',
         subTitle: 'by Tag.Hu',
         titleAlign: 'center', // center|left|right
         legend: true, // false|true
-        legendAlign: 'right', // right/center/left
-        legendText: function(d) {
-          return d.sum;
+        legendData: [1, 2, 3, 4, 5, 6],
+        legendAlign: 'right', // right/left
+        legendText: function(d, i) {
+          return i + '. ' + d;
         }
       });
     };

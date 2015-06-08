@@ -11,6 +11,18 @@ var Chart = (function() {
     self.config = {
       target: config.target,
 
+      color: d3.scale.ordinal()
+          .range([
+            "#1790cf",
+            "#1bb2d8",
+            "#99d2dd",
+            "#88b0bb",
+            "#1c7099",
+            "#038cc4",
+            "#75abd0",
+            "#afd6dd"
+          ]),
+
       width: config.width
           || config.target.clientWidth,
       height: config.height
@@ -31,8 +43,13 @@ var Chart = (function() {
 
       legend: config.legend
           || false,
+      legendData: config.legendData
+          || [],
       legendAlign: config.legendAlign
           || 'right',
+      legendItemWidth: 18,
+      legendItemHeight: 16,
+      legendItemMargin: 4,
       legendText: (config.legendText
           && typeof config.legendText == 'function')
           ? config.legendText
@@ -102,7 +119,7 @@ var Chart = (function() {
     // title start x
     var titleX = 0;
     // title dy
-    var titleDy = self.config.padding
+    self.titleDy = self.config.padding
         + self.config.titleSize;
     // title align left
     var titleAlign = 'middle';
@@ -126,7 +143,7 @@ var Chart = (function() {
     // draw title
     titleGroup.append('text')
         .attr('x', titleX)
-        .attr('dy', titleDy)
+        .attr('dy', self.titleDy)
         .style('text-anchor', titleAlign)
         .style('font-size', self.config.titleSize)
         .text(self.config.title);
@@ -135,7 +152,7 @@ var Chart = (function() {
     if(self.config.subTitle.length) {
       titleGroup.append('text')
           .attr('x', titleX)
-          .attr('dy', titleDy
+          .attr('dy', self.titleDy
               + 10
               + self.config.subTitleSize)
           .style('text-anchor', titleAlign)
@@ -145,7 +162,71 @@ var Chart = (function() {
   };
   Chart.prototype.drawLegend = function(data) {
     var self = this;
-    //
+    
+    // legend
+    if(self.config.legend) {
+
+      // legend x
+      var legendX = self.config.width
+          - self.config.padding
+          - self.config.legendItemWidth;
+      var textX = legendX
+          - self.config.legendItemMargin;
+      var textAlign = 'end';
+      // align left
+      if(self.config.legendAlign == 'left') {
+        legendX = self.config.padding;
+        textX = legendX
+            + self.config.legendItemWidth
+            + self.config.legendItemMargin;
+        textAlign = 'start';
+      }
+
+      // legend dy
+      var legendDy = self.config.padding;
+      if(self.config.title.length) {
+        legendDy = self.titleDy
+          + 10;
+        if(self.config.subTitle.length) {
+          legendDy += 10
+              + self.config.subTitleSize;
+        }
+      }
+
+      var legend = self.svg.append('g')
+          .attr('class', 'legend');
+
+      var item = legend.selectAll('.item')
+          .data(self.config.legendData)
+          .enter().append('g')
+            .attr('class', 'item')
+            .attr('transform', function(d, i) {
+              return 'translate(0, '
+                  + (i * (self.config.legendItemHeight
+                      + self.config.legendItemMargin)
+                      + legendDy)
+                  + ')';
+            });
+
+      item.append('rect')
+          .attr('x', legendX)
+          .attr('width', self.config.legendItemWidth)
+          .attr('height', self.config.legendItemHeight)
+          .style('fill', self.config.color);
+
+      item.append('text')
+          .attr('x', textX)
+          .attr('dy', self.config.legendItemHeight - 3)
+          .style('font-size', self.config.legendItemHeight - 2)
+          .style('text-anchor', textAlign)
+          .text(function(d, i) {
+            if(self.config.legendText) {
+              return self.config.legendText(d, i);
+            }else {
+              return d;
+            }
+          });
+    }
   };
   
   Chart.prototype.resize = function(data) {
