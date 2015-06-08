@@ -23,13 +23,13 @@
       var target = document.getElementById('d3');
 
       var chart = new Chart({
-        target: target,
-        autoResize: true,
+        target: target, // DOM element
+        autoResize: true, // true|false
         title: 'D3-Chart',
-        subTitle: '-by Tag.Hu',
-        titleAlign: 'center',
-        legend: true,
-        legendAlign: 'right',
+        subTitle: 'by Tag.Hu',
+        titleAlign: 'center', // center|left|right
+        legend: true, // false|true
+        legendAlign: 'right', // right/center/left
         legendText: function(d) {
           return d.sum;
         }

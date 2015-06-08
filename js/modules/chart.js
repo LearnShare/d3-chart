@@ -22,8 +22,10 @@ var Chart = (function() {
 
       title: config.title
           || '',
+      titleSize: 20,
       subTitle: config.subTitle
           || '',
+      subTitleSize: 12,
       titleAlign: config.titleAlign
           || 'center',
 
@@ -99,9 +101,11 @@ var Chart = (function() {
 
     // title start x
     var titleX = 0;
-    // title align
+    // title dy
+    var titleDy = self.config.padding
+        + self.config.titleSize;
+    // title align left
     var titleAlign = 'middle';
-
     // center
     titleX = self.config.width / 2;
     // left
@@ -116,10 +120,28 @@ var Chart = (function() {
       titleAlign = 'end';
     }
 
-    console.log(titleX, titleAlign);
-
     var titleGroup = self.svg.append('g')
         .attr('class', 'title');
+
+    // draw title
+    titleGroup.append('text')
+        .attr('x', titleX)
+        .attr('dy', titleDy)
+        .style('text-anchor', titleAlign)
+        .style('font-size', self.config.titleSize)
+        .text(self.config.title);
+
+    // draw subTitle
+    if(self.config.subTitle.length) {
+      titleGroup.append('text')
+          .attr('x', titleX)
+          .attr('dy', titleDy
+              + 10
+              + self.config.subTitleSize)
+          .style('text-anchor', titleAlign)
+          .style('font-size', self.config.subTitleSize)
+          .text(self.config.subTitle);
+    }
   };
   Chart.prototype.drawLegend = function(data) {
     var self = this;
