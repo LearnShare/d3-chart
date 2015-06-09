@@ -56,6 +56,21 @@ var Chart = (function() {
           : undefined
     };
 
+    // title dy
+    self.titleDy = self.config.padding
+        + self.config.titleSize;
+
+    // y of title bottom
+    self.titleYMax = self.config.padding;
+    if(self.config.title.length) {
+      self.titleYMax = self.titleDy
+        + 10;
+      if(self.config.subTitle.length) {
+        self.titleYMax += 10
+            + self.config.subTitleSize;
+      }
+    }
+
     if(self.config.autoResize) {
       window.addEventListener('resize', function() {
         // size really changed
@@ -75,20 +90,18 @@ var Chart = (function() {
   Chart.prototype.setData = function(data) {
     var self = this;
 
-    self.chartData = data;
-    self.drawChart();
+    self.draw();
   };
   
   // append more data
   Chart.prototype.appendData = function(data) {
     var self = this;
 
-    // self.chartData = data;
-    self.drawChart();
+    self.draw();
   };
 
   // draw svg bg
-  Chart.prototype.draw = function(data) {
+  Chart.prototype.draw = function() {
     var self = this;
 
     // clean svg in target
@@ -104,10 +117,10 @@ var Chart = (function() {
     self.drawTitle();
     self.drawLegend();
   };
-  Chart.prototype.drawChart = function(data) {
+  Chart.prototype.drawChart = function() {
     var self = this;
   };
-  Chart.prototype.drawTitle = function(data) {
+  Chart.prototype.drawTitle = function() {
     var self = this;
     
     // title is empty
@@ -117,9 +130,6 @@ var Chart = (function() {
 
     // title start x
     var titleX = 0;
-    // title dy
-    self.titleDy = self.config.padding
-        + self.config.titleSize;
     // title align left
     var titleAlign = 'middle';
     // center
@@ -159,7 +169,7 @@ var Chart = (function() {
           .text(self.config.subTitle);
     }
   };
-  Chart.prototype.drawLegend = function(data) {
+  Chart.prototype.drawLegend = function() {
     var self = this;
     
     // legend
@@ -181,17 +191,6 @@ var Chart = (function() {
         textAlign = 'start';
       }
 
-      // legend dy
-      var legendDy = self.config.padding;
-      if(self.config.title.length) {
-        legendDy = self.titleDy
-          + 10;
-        if(self.config.subTitle.length) {
-          legendDy += 10
-              + self.config.subTitleSize;
-        }
-      }
-
       var legend = self.svg.append('g')
           .attr('class', 'legend');
 
@@ -203,7 +202,7 @@ var Chart = (function() {
               return 'translate(0, '
                   + (i * (self.config.legendItemHeight
                       + self.config.legendItemMargin)
-                      + legendDy)
+                      + self.titleYMax)
                   + ')';
             });
 
@@ -228,7 +227,7 @@ var Chart = (function() {
     }
   };
   
-  Chart.prototype.resize = function(data) {
+  Chart.prototype.resize = function() {
     var self = this;
 
     self.config.width = self.config.target.clientWidth;
