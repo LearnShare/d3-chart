@@ -13,14 +13,14 @@ var Chart = (function() {
 
       color: d3.scale.ordinal()
           .range([
-            "#1790cf",
-            "#1bb2d8",
-            "#99d2dd",
-            "#88b0bb",
-            "#1c7099",
-            "#038cc4",
-            "#75abd0",
-            "#afd6dd"
+            "#AC92EC",
+            "#ED5565",
+            "#656D78",
+            "#8CC152",
+            "#FC6E51",
+            "#EC87C0",
+            "#37BC9B",
+            "#SD9CEC"
           ]),
 
       width: config.width
