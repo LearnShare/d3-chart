@@ -210,7 +210,9 @@ var Chart = (function() {
           .attr('x', legendX)
           .attr('width', self.config.legendItemWidth)
           .attr('height', self.config.legendItemHeight)
-          .style('fill', self.config.color);
+          .style('fill', function(d, i) {
+            return self.config.color(i);
+          });
 
       item.append('text')
           .attr('x', textX)
