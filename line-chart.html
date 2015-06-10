@@ -59,9 +59,49 @@
         chartMarginY: 30,
         type: 'line', // line|area
         line: 'segment', // segment|curve|step
-        marker: 'none' // none|dot|square|circle
+        marker: 'none', // none|dot|square|circle
+        xFormat: 'time', // value|time
+        timeFormat: '%Y-%m-%d %H:%M:%S',
+        xTick: function(d, i) {
+          if(!d.getHours()
+              && !d.getMinutes()
+              && !d.getSeconds()) {
+            return d3.time.format('%m-%d')(d);
+          }else {
+            return d3.time.format('%H:%M')(d);
+          }
+        }
       });
 
+      lineChart.setData([
+          [{
+            x: '2015-06-10 16:27:00',
+            y: 19
+          }, {
+            x: '2015-06-11 16:28:00',
+            y: 12
+          }, {
+            x: '2015-06-12 16:29:00',
+            y: 20
+          }, {
+            x: '2015-06-13 16:30:00',
+            y: 15
+          }, {
+            x: '2015-06-14 16:37:00',
+            y: 6
+          }, {
+            x: '2015-06-15 16:42:00',
+            y: 24
+          }, {
+            x: '2015-06-16 16:46:00',
+            y: 8
+          }, {
+            x: '2015-06-17 16:47:00',
+            y: 16
+          }]
+        ]);
+
+      /*
       lineChart.setData([
         [{
           x: 1,
@@ -153,6 +193,7 @@
         'line2',
         'line3'
       ]);
+      */
     };
   </script>
 </head>

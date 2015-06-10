@@ -16,12 +16,32 @@ var LineChart = (function(_super) {
     self.config.chartMarginY = config.chartMarginY
         || 30;
 
+    self.config.xFormat = config.xFormat
+        || 'value';
+    self.config.timeFormat = config.timeFormat
+        || '%Y-%m-%d %H:%M:%S';
+    var xTick = function(d) {
+      return d;
+    };
+    if(self.config.xFormat == 'time') {
+      xTick = d3.time.format('%H:%M');
+    }
+    self.config.xTick = config.xTick
+        || xTick;
+
     self.config.type = config.type
         || 'line';
     self.config.line = config.line
-        || 'line';
+        || 'segment';
     self.config.marker = config.marker
-        || 'line';
+        || 'none';
+
+    self.xFormater = function(d) {
+      return d;
+    };
+    if(self.config.xFormat == 'time') {
+      self.xFormater = d3.time.format(self.config.timeFormat).parse;
+    }
   }
 
   // set chartData
@@ -34,11 +54,14 @@ var LineChart = (function(_super) {
     self.dataX = [];
     self.minY = 0;
     self.maxY = 0;
+
     for(var i in data) {
       var data = self.chartData[i];
 
       for(var j in data) {
         var d = data[j];
+
+        d.x = self.xFormater(d.x);
 
         if(self.dataX.indexOf(d.x) == -1) {
           self.dataX.push(d.x);
@@ -110,6 +133,13 @@ var LineChart = (function(_super) {
         .domain(d3.extent(self.dataX, function(d){
           return d;
         }));
+    if(self.config.xFormat == 'time') {
+      self.rangeX = d3.time.scale()
+          .range([0, self.chartWidth])
+          .domain(d3.extent(self.dataX, function(d){
+            return d;
+          }));
+    }
     self.rangeY = d3.scale.linear()
         .range([self.chartHeight, 0])
         .domain([self.minY, self.maxY]);
@@ -145,20 +175,20 @@ var LineChart = (function(_super) {
     // line path
     var line = d3.svg.line()
         .interpolate(lineInterpolate)
-        .x(function(d){
+        .x(function(d) {
           return self.rangeX(d.x);
         })
-        .y(function(d){
+        .y(function(d) {
           return self.rangeY(d.y);
         });
     // area path
     var area = d3.svg.area()
         .interpolate(lineInterpolate)
-        .x(function(d){
+        .x(function(d) {
           return self.rangeX(d.x);
         })
         .y0(self.chartHeight)
-        .y1(function(d){
+        .y1(function(d) {
           return self.rangeY(d.y);
         });
 
@@ -200,9 +230,7 @@ var LineChart = (function(_super) {
     self.axisX = d3.svg.axis()
         .scale(self.rangeX)
         .orient('bottom')
-        .tickFormat(function(d, i) {
-          return d;
-        });
+        .tickFormat(self.config.xTick);
     self.axisY = d3.svg.axis()
         .scale(self.rangeY)
         .orient('left')
