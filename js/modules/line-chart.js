@@ -106,9 +106,13 @@ var LineChart = (function(_super) {
 
     // x/y range
     self.rangeX = d3.scale.linear()
-        .range([0, self.chartWidth]);
+        .range([0, self.chartWidth])
+        .domain(d3.extent(self.dataX, function(d){
+          return d;
+        }));
     self.rangeY = d3.scale.linear()
-        .range([self.chartHeight, 0]);
+        .range([self.chartHeight, 0])
+        .domain([self.minY, self.maxY]);
 
     self.drawLines();
     self.drawAxises();
@@ -117,11 +121,6 @@ var LineChart = (function(_super) {
   // draw lines
   LineChart.prototype.drawLines = function() {
     var self = this;
-
-    self.rangeX.domain(d3.extent(self.dataX, function(d){
-      return d;
-    }));
-    self.rangeY.domain([self.minY, self.maxY]);
 
     for(var i in self.chartData) {
       var data = self.chartData[i];
@@ -136,8 +135,16 @@ var LineChart = (function(_super) {
   LineChart.prototype.drawLine = function(data, i) {
     var self = this;
 
+    // line interpolate
+    var lineInterpolate = 'linear';
+    if(self.config.line == 'curve') {
+      lineInterpolate = 'cardinal';
+    }else if(self.config.line == 'step') {
+      lineInterpolate = 'step';
+    }
     // line path
     var line = d3.svg.line()
+        .interpolate(lineInterpolate)
         .x(function(d){
           return self.rangeX(d.x);
         })
@@ -146,13 +153,14 @@ var LineChart = (function(_super) {
         });
     // area path
     var area = d3.svg.area()
-      .x(function(d){
-        return self.rangeX(d.x);
-      })
-      .y0(self.chartHeight)
-      .y1(function(d){
-        return self.rangeY(d.y);
-      });
+        .interpolate(lineInterpolate)
+        .x(function(d){
+          return self.rangeX(d.x);
+        })
+        .y0(self.chartHeight)
+        .y1(function(d){
+          return self.rangeY(d.y);
+        });
 
     // line/area
     var pathClass = 'line',
