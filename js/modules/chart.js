@@ -13,7 +13,7 @@ var Chart = (function() {
 
       color: d3.scale.ordinal()
           .range([
-            "#AC92EC",
+            "#337AB7",
             "#ED5565",
             "#656D78",
             "#8CC152",
