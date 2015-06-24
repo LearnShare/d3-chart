@@ -16,23 +16,26 @@
       height: 100%;
     }
     .axis {
-      font-size: 14px;
+      font-size: 12px;
     }
     .axis path,
+    .axis tick,
     .axis line {
       fill: none;
-      stroke: #000;
+      stroke: rgba(0, 0, 0, 0.4);
+      stroke-width: 1px;
       shape-rendering: crispEdges;
+    }
+    .axis text {
+      stroke: none;
+      fill: rgba(0, 0, 0, 0.6);
     }
     .line-chart .line {
       fill: none;
     }
-    .line-chart .area {
-      opacity: 0.5;
-    }
-    .line-chart .line:hover,
-    .line-chart .area:hover {
-      stroke: #000 !important;
+    .line:hover,
+    .area:hover {
+      stroke: rgba(40, 40, 200, 0.4) !important;
     }
   </style>
   <script src="./js/lib/d3.js"></script>
@@ -57,7 +60,7 @@
         },
         chartMarginX: 30,
         chartMarginY: 30,
-        type: 'line', // line|area
+        type: 'area', // line|area
         line: 'segment', // segment|curve|step
         marker: 'none', // none|dot|square|circle
         xFormat: 'time', // value|time

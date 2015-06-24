@@ -226,10 +226,19 @@ var LineChart = (function(_super) {
   LineChart.prototype.drawAxises = function() {
     var self = this;
 
+    var tickStep = 60;
+    if(self.config.width >= 768) {
+      tickStep = 80;
+    }
+    
+    var tickTimes = parseInt(self.config.width / tickStep)
+        - 1;
+
     // x/y axises
     self.axisX = d3.svg.axis()
         .scale(self.rangeX)
         .orient('bottom')
+        .ticks(tickTimes)
         .tickFormat(self.config.xTick);
     self.axisY = d3.svg.axis()
         .scale(self.rangeY)
