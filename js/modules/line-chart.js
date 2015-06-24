@@ -226,23 +226,35 @@ var LineChart = (function(_super) {
   LineChart.prototype.drawAxises = function() {
     var self = this;
 
-    var tickStep = 60;
+    var xTickStep = 60,
+        yTickStep = 40;
     if(self.config.width >= 768) {
-      tickStep = 80;
+      xTickStep = 80;
     }
     
-    var tickTimes = parseInt(self.config.width / tickStep)
+    var xTickTimes = parseInt(self.config.width / xTickStep)
+        - 1,
+        yTickTimes = parseInt(self.config.height / yTickStep)
         - 1;
+    if(xTickTimes >= 10) {
+      xTickTimes = 10;
+    }
+    if(yTickTimes >= 12) {
+      yTickTimes = 12;
+    }else {
+      yTickTimes = 6;
+    }
 
     // x/y axises
     self.axisX = d3.svg.axis()
         .scale(self.rangeX)
         .orient('bottom')
-        .ticks(tickTimes)
+        .ticks(xTickTimes)
         .tickFormat(self.config.xTick);
     self.axisY = d3.svg.axis()
         .scale(self.rangeY)
         .orient('left')
+        .ticks(yTickTimes)
         .tickFormat(function(d, i) {
           return d;
         });
