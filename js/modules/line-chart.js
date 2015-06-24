@@ -228,7 +228,7 @@ var LineChart = (function(_super) {
 
     var xTickStep = 60,
         yTickStep = 40;
-    if(self.config.width >= 768) {
+    if(window.innerWidth >= 700) {
       xTickStep = 80;
     }
     
