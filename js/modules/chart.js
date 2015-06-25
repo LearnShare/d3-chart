@@ -15,8 +15,8 @@ var Chart = (function() {
           .range([
             "#5D9CEC",
             "#656D78",
-            "#CCD1D9",
             "#A0D468",
+            "#CCD1D9",
             "#4FC1E9",
             "#48CFAD",
             "#AC92EC",
@@ -34,10 +34,12 @@ var Chart = (function() {
 
       title: config.title
           || '',
-      titleSize: 20,
+      titleSize: config.titleSize
+          || 20,
       subTitle: config.subTitle
           || '',
-      subTitleSize: 12,
+      subTitleSize: config.titleSize
+          || 12,
       titleAlign: config.titleAlign
           || 'center',
 
@@ -154,7 +156,7 @@ var Chart = (function() {
         .attr('x', titleX)
         .attr('dy', self.titleDy)
         .style('text-anchor', titleAlign)
-        .style('font-size', self.config.titleSize)
+        .style('font-size', self.config.titleSize + 'px')
         .text(self.config.title);
 
     // draw subTitle
@@ -165,7 +167,7 @@ var Chart = (function() {
               + 10
               + self.config.subTitleSize)
           .style('text-anchor', titleAlign)
-          .style('font-size', self.config.subTitleSize)
+          .style('font-size', self.config.subTitleSize + 'px')
           .text(self.config.subTitle);
     }
   };
@@ -217,7 +219,7 @@ var Chart = (function() {
       item.append('text')
           .attr('x', textX)
           .attr('dy', self.config.legendItemHeight - 3)
-          .style('font-size', self.config.legendItemHeight - 2)
+          .style('font-size', self.config.legendItemHeight - 4)
           .style('text-anchor', textAlign)
           .text(function(d, i) {
             if(self.config.legendText) {
