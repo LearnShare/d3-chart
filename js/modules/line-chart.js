@@ -127,6 +127,11 @@ var LineChart = (function(_super) {
         - self.titleYMax
         - self.config.chartMarginY;
 
+    if(self.chartWidth <= 0
+        || self.chartHeight <= 0) {
+      return;
+    }
+
     // x/y range
     self.rangeX = d3.scale.linear()
         .range([0, self.chartWidth])
