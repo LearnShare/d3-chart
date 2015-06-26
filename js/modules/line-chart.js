@@ -308,8 +308,11 @@ var LineChart = (function(_super) {
         .style('display', 'none');
 
     marker.append('rect')
-        .style('fill', 'rgba(0, 0, 0, 0.6)');
-    marker.append('text');
+        .style('fill', '#666');
+    marker.append('text')
+        .style('fill', '#FFF')
+        .style('font-size', '12px')
+        .style('text-anchor', 'middle');
 
     self.markerX = marker;
 
@@ -321,7 +324,10 @@ var LineChart = (function(_super) {
 
       marker.append('rect')
           .style('stroke', self.config.color(i));
-      marker.append('text');
+      marker.append('text')
+          .style('fill', '#333')
+          .style('font-size', '12px')
+          .style('text-anchor', 'middle');
 
       self.markers.push(marker);
     }
@@ -395,8 +401,13 @@ var LineChart = (function(_super) {
       rectWidth = 40;
     }
 
+    textElmt.attr('dy', (textElmtHeight + rectHeight) / 2 - 2);
+
     rectElmt.attr('width', rectWidth)
-        .attr('height', rectHeight);
+        .attr('height', rectHeight)
+        .attr('transform', 'translate(-'
+            + (rectWidth / 2)
+            + ', 0)');
 
     self.markerX.style('display', 'block')
         .attr('transform', 'translate('
@@ -430,8 +441,19 @@ var LineChart = (function(_super) {
       rectWidth = 40;
     }
 
+    textElmt.attr('transform', 'translate('
+        + (rectWidth / 2 + 10)
+        + ', '
+        + (textElmtHeight / 2 - 2)
+        + ')');
+
     rectElmt.attr('width', rectWidth)
-        .attr('height', rectHeight);
+        .attr('height', rectHeight)
+        .attr('transform', 'translate('
+            + 10
+            + ', -'
+            + (rectHeight / 2)
+            + ')');
 
     self.markers[i].style('display', 'block')
         .attr('transform', 'translate('
