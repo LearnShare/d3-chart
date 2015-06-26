@@ -329,6 +329,7 @@ var LineChart = (function(_super) {
 
       marker.append('circle')
           .attr('cx', -5)
+          .attr('cy', 0)
           .attr('r', 3)
           .style('stroke', self.config.color(i));
       marker.append('rect')
@@ -472,7 +473,8 @@ var LineChart = (function(_super) {
             + (rectHeight / 2)
             + ')');
 
-    var circleX = -5;
+    var circleX = -5,
+        circleY = 0;
 
     var translateX = point.x + 5;
     // right border
@@ -486,13 +488,16 @@ var LineChart = (function(_super) {
     // top border
     if(translateY - rectHeight / 2 < 0) {
       translateY = rectHeight / 2;
+      circleY = point.y - translateY;
     }
     // bottom border
     if(translateY + rectHeight / 2 > self.chartHeight) {
       translateY = self.chartHeight - rectHeight / 2;
+      circleY = point.y - translateY;
     }
 
     circleElmt.attr('cx', circleX)
+        .attr('cy', circleY);
 
     self.markers[i].style('display', 'block')
         .attr('transform', 'translate('
