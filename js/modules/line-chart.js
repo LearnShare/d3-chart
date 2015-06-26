@@ -405,13 +405,22 @@ var LineChart = (function(_super) {
 
     rectElmt.attr('width', rectWidth)
         .attr('height', rectHeight)
-        .attr('transform', 'translate(-'
-            + (rectWidth / 2)
+        .attr('transform', 'translate('
+            + -(rectWidth / 2)
             + ', 0)');
 
+    var translateX = point.x;
+    // left border
+    if(point.x - rectWidth / 2 < 0) {
+      translateX = rectWidth / 2;
+    }
+    // right border
+    if(point.x + rectWidth / 2 > self.chartWidth) {
+      translateX = self.chartWidth - rectWidth / 2;
+    }
     self.markerX.style('display', 'block')
         .attr('transform', 'translate('
-            + point.x
+            + translateX
             + ', '
             + self.chartHeight
             + ')');
