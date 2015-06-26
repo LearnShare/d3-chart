@@ -327,6 +327,10 @@ var LineChart = (function(_super) {
           .attr('class', 'marker')
           .style('display', 'none');
 
+      marker.append('circle')
+          .attr('cx', -5)
+          .attr('r', 3)
+          .style('stroke', self.config.color(i));
       marker.append('rect')
           .style('stroke', self.config.color(i));
       marker.append('text')
@@ -441,7 +445,8 @@ var LineChart = (function(_super) {
     };
 
     var textElmt = self.markers[i].select('text'),
-        rectElmt = self.markers[i].select('rect');
+        rectElmt = self.markers[i].select('rect'),
+        circleElmt = self.markers[i].select('circle');
     
     textElmt.text(d.y);
 
@@ -467,9 +472,13 @@ var LineChart = (function(_super) {
             + (rectHeight / 2)
             + ')');
 
+    var circleX = -5;
+
     var translateX = point.x + 5;
     // right border
     if(translateX + rectWidth > self.chartWidth) {
+      circleX = rectWidth + 5;
+
       translateX = point.x - rectWidth - 5;
     }
 
@@ -482,6 +491,8 @@ var LineChart = (function(_super) {
     if(translateY + rectHeight / 2 > self.chartHeight) {
       translateY = self.chartHeight - rectHeight / 2;
     }
+
+    circleElmt.attr('cx', circleX)
 
     self.markers[i].style('display', 'block')
         .attr('transform', 'translate('
