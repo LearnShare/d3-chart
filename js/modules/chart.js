@@ -55,7 +55,10 @@ var Chart = (function() {
       legendText: (config.legendText
           && typeof config.legendText == 'function')
           ? config.legendText
-          : undefined
+          : undefined,
+
+      mouseEvent: config.mouseEvent
+          || false
     };
 
     // title dy

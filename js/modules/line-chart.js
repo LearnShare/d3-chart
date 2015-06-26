@@ -144,8 +144,16 @@ var LineChart = (function(_super) {
         .range([self.chartHeight, 0])
         .domain([self.minY, self.maxY]);
 
+    self.bisectX = d3.bisector(function(d) {
+      return d.x;
+    }).left;
+
     self.drawLines();
     self.drawAxises();
+
+    if(self.config.mouseEvent) {
+      self.drawOverlay();
+    }
   };
 
   // draw lines
@@ -268,6 +276,181 @@ var LineChart = (function(_super) {
     self.chart.append('g')
         .attr('class', 'axis y')
         .call(self.axisY);
+  };
+
+  // draw overlay
+  LineChart.prototype.drawOverlay = function() {
+    var self = this;
+
+    if(!self.chartData.length) {
+      return;
+    }
+    
+    var overlay = self.svg.append('g')
+        .attr('class', 'overlay')
+        .attr('transform', 'translate('
+            + (self.config.padding
+                + self.config.chartMarginX)
+            + ', '
+            + self.titleYMax
+            + ')');
+
+    var overlayRect = overlay.append('rect')
+        .attr('width', self.chartWidth)
+        .attr('height', self.chartHeight)
+        .style('stroke', 'none')
+        .style('fill', 'rgba(0, 0, 0, 0)');
+
+    self.markers = [];
+
+    var marker = overlay.append('g')
+        .attr('class', 'marker')
+        .style('display', 'none');
+
+    marker.append('rect')
+        .style('fill', 'rgba(0, 0, 0, 0.6)');
+    marker.append('text');
+
+    self.markerX = marker;
+
+    var length = self.chartData.length;
+    for(var i = 0; i < length; i++) {
+      var marker = overlay.append('g')
+          .attr('class', 'marker')
+          .style('display', 'none');
+
+      marker.append('rect')
+          .style('stroke', self.config.color(i));
+      marker.append('text');
+
+      self.markers.push(marker);
+    }
+
+    overlay.on('mousemove', function() {
+      self.pointToX(self.rangeX.invert(d3.mouse(this)[0]));
+    });
+    overlay.on('mouseout', function() {
+      self.hideMarkers();
+    });
+  };
+
+  // point to x
+  LineChart.prototype.pointToX = function(x) {
+    var self = this;
+
+    var index = self.bisectX(self.chartData[0], x, 1);
+
+    var d = (x - self.chartData[0][index - 1].x
+          > self.chartData[0][index].x - x)
+        ? self.chartData[0][index]
+        : self.chartData[0][index - 1];
+    
+    self.moveMarkerX(d);
+
+    for(var i in self.chartData) {
+      var data = self.chartData[i];
+
+      if(data.length) {
+        var index = self.bisectX(data, x, 1);
+
+        var d = (x - data[index - 1].x
+              > data[index].x - x)
+            ? data[index]
+            : data[index - 1];
+
+        // 变化检测，同样的 d.x 不重复移动
+        self.moveMarker(i, d);
+      }
+    }
+  };
+
+  // markX @ (d.x, d.y)
+  LineChart.prototype.moveMarkerX = function(d) {
+    var self = this;
+
+    var point = {
+      x: self.rangeX(d.x),
+      y: self.rangeY(d.y)
+    };
+
+    var textElmt = self.markerX.select('text'),
+        rectElmt = self.markerX.select('rect');
+
+    var formater = function(d) {
+      return d;
+    };
+    if(self.config.xFormat == 'time') {
+      formater = d3.time.format(self.config.timeFormat);
+    }
+    
+    textElmt.text(formater(d.x));
+
+    var textElmtWidth = textElmt[0][0].clientWidth,
+        textElmtHeight = textElmt[0][0].clientHeight;
+
+    var rectWidth = textElmtWidth + 20,
+        rectHeight = textElmtHeight + 10;
+
+    if(rectWidth < 40) {
+      rectWidth = 40;
+    }
+
+    rectElmt.attr('width', rectWidth)
+        .attr('height', rectHeight);
+
+    self.markerX.style('display', 'block')
+        .attr('transform', 'translate('
+            + point.x
+            + ', '
+            + self.chartHeight
+            + ')');
+  };
+
+  // mark point i @ (d.x, d.y)
+  LineChart.prototype.moveMarker = function(i, d) {
+    var self = this;
+
+    var point = {
+      x: self.rangeX(d.x),
+      y: self.rangeY(d.y)
+    };
+
+    var textElmt = self.markers[i].select('text'),
+        rectElmt = self.markers[i].select('rect');
+    
+    textElmt.text(d.y);
+
+    var textElmtWidth = textElmt[0][0].clientWidth,
+        textElmtHeight = textElmt[0][0].clientHeight;
+
+    var rectWidth = textElmtWidth + 20,
+        rectHeight = textElmtHeight + 10;
+
+    if(rectWidth < 40) {
+      rectWidth = 40;
+    }
+
+    rectElmt.attr('width', rectWidth)
+        .attr('height', rectHeight);
+
+    self.markers[i].style('display', 'block')
+        .attr('transform', 'translate('
+            + point.x
+            + ', '
+            + point.y
+            + ')');
+  };
+
+  // hide all markers
+  LineChart.prototype.hideMarkers = function() {
+    var self = this;
+
+    self.markerX.style('display', 'none');
+    for(var i in self.markers) {
+      var marker = self.markers[i];
+
+      marker.style('display', 'none');
+    }
   };
   
   return LineChart;
