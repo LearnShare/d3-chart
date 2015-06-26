@@ -451,24 +451,38 @@ var LineChart = (function(_super) {
     }
 
     textElmt.attr('transform', 'translate('
-        + (rectWidth / 2 + 10)
+        + (rectWidth / 2)
         + ', '
         + (textElmtHeight / 2 - 2)
         + ')');
 
     rectElmt.attr('width', rectWidth)
         .attr('height', rectHeight)
-        .attr('transform', 'translate('
-            + 10
-            + ', -'
+        .attr('transform', 'translate(0, -'
             + (rectHeight / 2)
             + ')');
 
+    var translateX = point.x + 5;
+    // right border
+    if(translateX + rectWidth > self.chartWidth) {
+      translateX = point.x - rectWidth - 5;
+    }
+
+    var translateY = point.y;
+    // top border
+    if(translateY - rectHeight / 2 < 0) {
+      translateY = rectHeight / 2;
+    }
+    // bottom border
+    if(translateY + rectHeight / 2 > self.chartHeight) {
+      translateY = self.chartHeight - rectHeight / 2;
+    }
+
     self.markers[i].style('display', 'block')
         .attr('transform', 'translate('
-            + point.x
+            + translateX
             + ', '
-            + point.y
+            + translateY
             + ')');
   };
 
