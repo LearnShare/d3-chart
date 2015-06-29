@@ -306,12 +306,6 @@ var LineChart = (function(_super) {
             + self.chartTranslateY
             + ')');
 
-    var overlayRect = overlay.append('rect')
-        .attr('width', self.chartWidth)
-        .attr('height', self.chartHeight)
-        .style('stroke', 'none')
-        .style('fill', 'rgba(0, 0, 0, 0)');
-
     self.markers = [];
 
     var marker = overlay.append('g')
@@ -348,10 +342,20 @@ var LineChart = (function(_super) {
       self.markers.push(marker);
     }
 
-    overlay.on('mousemove', function() {
+    var overlayRect = overlay.append('rect')
+        .attr('width', self.chartWidth)
+        .attr('height', self.chartHeight)
+        .style('stroke', 'none')
+        .style('fill', 'rgba(0, 0, 0, 0)');
+
+    self.dxCache = 0;
+    overlayRect.on('mouseenter', function() {
+      self.showMarkers();
+    });
+    overlayRect.on('mousemove', function() {
       self.pointToX(self.rangeX.invert(d3.mouse(this)[0]));
     });
-    overlay.on('mouseout', function() {
+    overlayRect.on('mouseout', function() {
       self.hideMarkers();
     });
   };
@@ -366,22 +370,26 @@ var LineChart = (function(_super) {
           > self.chartData[0][index].x - x)
         ? self.chartData[0][index]
         : self.chartData[0][index - 1];
+
+    // 变化检测，同样的 d.x 不重复移动
+    if(d.x != self.dxCache) {
+      self.dxCache = d.x;
     
-    self.moveMarkerX(d);
+      self.moveMarkerX(d);
 
-    for(var i in self.chartData) {
-      var data = self.chartData[i];
+      for(var i in self.chartData) {
+        var data = self.chartData[i];
 
-      if(data.length) {
-        var index = self.bisectX(data, x, 1);
+        if(data.length) {
+          var index = self.bisectX(data, x, 1);
 
-        var d = (x - data[index - 1].x
-              > data[index].x - x)
-            ? data[index]
-            : data[index - 1];
+          var d = (x - data[index - 1].x
+                > data[index].x - x)
+              ? data[index]
+              : data[index - 1];
 
-        // 变化检测，同样的 d.x 不重复移动
-        self.moveMarker(i, d);
+          self.moveMarker(i, d);
+        }
       }
     }
   };
@@ -511,6 +519,18 @@ var LineChart = (function(_super) {
             + ', '
             + translateY
             + ')');
+  };
+
+  // show all markers
+  LineChart.prototype.showMarkers = function() {
+    var self = this;
+
+    self.markerX.style('display', 'block');
+    for(var i in self.markers) {
+      var marker = self.markers[i];
+
+      marker.style('display', 'block');
+    }
   };
 
   // hide all markers
