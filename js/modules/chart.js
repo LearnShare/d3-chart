@@ -13,14 +13,14 @@ var Chart = (function() {
 
       color: d3.scale.ordinal()
           .range([
-            "#5D9CEC",
-            "#656D78",
-            "#A0D468",
-            "#CCD1D9",
-            "#4FC1E9",
-            "#48CFAD",
-            "#AC92EC",
-            "#E6E9ED"
+            '#5D9CEC',
+            '#656D78',
+            '#A0D468',
+            '#CCD1D9',
+            '#4FC1E9',
+            '#48CFAD',
+            '#AC92EC',
+            '#E6E9ED'
           ]),
 
       width: config.width
@@ -118,9 +118,9 @@ var Chart = (function() {
             .attr('width', self.config.width)
             .attr('height', self.config.height);
 
-    self.drawChart();
     self.drawTitle();
     self.drawLegend();
+    self.drawChart();
   };
   Chart.prototype.drawChart = function() {
     var self = this;

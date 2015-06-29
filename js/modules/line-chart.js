@@ -107,13 +107,19 @@ var LineChart = (function(_super) {
       return;
     }
 
+    self.chartTranslateY = self.config.padding
+        + self.titleYMax
+        + self.config.legendData.length
+          * (self.config.legendItemHeight
+            + self.config.legendItemMargin)
+
     self.chart = self.svg.append('g')
         .attr('class', 'line-chart')
         .attr('transform', 'translate('
             + (self.config.padding
                 + self.config.chartMarginX)
             + ', '
-            + self.titleYMax
+            + self.chartTranslateY
             + ')'
         );
 
@@ -122,9 +128,9 @@ var LineChart = (function(_super) {
         - self.config.padding * 2
         - self.config.chartMarginX
         - self.config.chartMarginX / 2;
+
     self.chartHeight = self.config.height
-        - self.config.padding
-        - self.titleYMax
+        - self.chartTranslateY
         - self.config.chartMarginY;
 
     if(self.chartWidth <= 0
@@ -297,7 +303,7 @@ var LineChart = (function(_super) {
             + (self.config.padding
                 + self.config.chartMarginX)
             + ', '
-            + self.titleYMax
+            + self.chartTranslateY
             + ')');
 
     var overlayRect = overlay.append('rect')
