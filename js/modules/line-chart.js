@@ -213,8 +213,8 @@ var LineChart = (function(_super) {
 
     // line/area
     var pathClass = 'line',
-        pathData = line;
-        pathStroke = true;
+        pathData = line,
+        pathStroke = true,
         pathFill = false;
     if(self.config.type == 'area') {
       pathClass = 'area';
@@ -363,6 +363,10 @@ var LineChart = (function(_super) {
   // point to x
   LineChart.prototype.pointToX = function(x) {
     var self = this;
+    
+    if(self.chartData[0].length < 2) {
+      return;
+    }
 
     var index = self.bisectX(self.chartData[0], x, 1);
 
