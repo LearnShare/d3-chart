@@ -419,8 +419,10 @@ var LineChart = (function(_super) {
     
     textElmt.text(formater(d.x));
 
-    var textElmtWidth = textElmt[0][0].clientWidth,
-        textElmtHeight = textElmt[0][0].clientHeight;
+    var textElmtRect = textElmt[0][0].getBoundingClientRect();
+
+    var textElmtWidth = textElmtRect.width,
+        textElmtHeight = textElmtRect.height;
 
     var rectWidth = textElmtWidth + 20,
         rectHeight = textElmtHeight + 10;
@@ -429,7 +431,7 @@ var LineChart = (function(_super) {
       rectWidth = 40;
     }
 
-    textElmt.attr('dy', (textElmtHeight + rectHeight) / 2 - 2);
+    textElmt.attr('dy', (textElmtHeight + rectHeight) / 2 - 3);
 
     rectElmt.attr('width', rectWidth)
         .attr('height', rectHeight)
@@ -469,8 +471,10 @@ var LineChart = (function(_super) {
     
     textElmt.text(d.y);
 
-    var textElmtWidth = textElmt[0][0].clientWidth,
-        textElmtHeight = textElmt[0][0].clientHeight;
+    var textElmtRect = textElmt[0][0].getBoundingClientRect();
+
+    var textElmtWidth = textElmtRect.width,
+        textElmtHeight = textElmtRect.height;
 
     var rectWidth = textElmtWidth + 20,
         rectHeight = textElmtHeight + 10;
@@ -482,7 +486,7 @@ var LineChart = (function(_super) {
     textElmt.attr('transform', 'translate('
         + (rectWidth / 2)
         + ', '
-        + (textElmtHeight / 2 - 2)
+        + (textElmtHeight / 2 - 3)
         + ')');
 
     rectElmt.attr('width', rectWidth)
