@@ -48,7 +48,7 @@
         legend: true, // false|true
         legendAlign: 'right', // right/left
         legendText: function(d, i) {
-          return d.name;
+          return d;
         }
       });
 
@@ -136,7 +136,12 @@
           name: 'c',
           value: 4
         }]
-      }]);
+      }],
+      [
+        'a',
+        'b',
+        'c'
+      ]);
     };
   </script>
 </head>
