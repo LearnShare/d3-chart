@@ -14,7 +14,7 @@ var LineChart = (function(_super) {
     self.config.chartMarginX = config.chartMarginX
         || 30;
     self.config.chartMarginY = config.chartMarginY
-        || 30;
+        || 20;
 
     self.config.xFormat = config.xFormat
         || 'value';
@@ -111,7 +111,7 @@ var LineChart = (function(_super) {
         + self.titleYMax
         + self.config.legendData.length
           * (self.config.legendItemHeight
-            + self.config.legendItemMargin)
+            + self.config.legendItemMargin);
 
     self.chart = self.svg.append('g')
         .attr('class', 'line-chart')
@@ -131,6 +131,7 @@ var LineChart = (function(_super) {
 
     self.chartHeight = self.config.height
         - self.chartTranslateY
+        - self.config.padding
         - self.config.chartMarginY;
 
     if(self.chartWidth <= 0

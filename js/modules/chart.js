@@ -66,13 +66,12 @@ var Chart = (function() {
         + self.config.titleSize;
 
     // y of title bottom
-    self.titleYMax = self.config.padding;
+    self.titleYMax = 0;
     if(self.config.title.length) {
       self.titleYMax = self.titleDy
-        + 10;
+        + self.config.padding; // as marginBottom of title
       if(self.config.subTitle.length) {
-        self.titleYMax += 10
-            + self.config.subTitleSize;
+        self.titleYMax += self.config.subTitleSize;
       }
     }
 
@@ -197,7 +196,10 @@ var Chart = (function() {
       }
 
       var legend = self.svg.append('g')
-          .attr('class', 'legend');
+          .attr('class', 'legend')
+          .attr('transform', 'translate(0, '
+              + self.config.padding
+              + ')');
 
       var item = legend.selectAll('.item')
           .data(self.config.legendData)
