@@ -107,11 +107,16 @@ var LineChart = (function(_super) {
       return;
     }
 
+    var legendHeight = self.config.legendData.length
+        * (self.config.legendItemHeight
+          + self.config.legendItemMargin);
+
     self.chartTranslateY = self.config.padding
-        + self.titleYMax
-        + self.config.legendData.length
-          * (self.config.legendItemHeight
-            + self.config.legendItemMargin);
+        + self.titleYMax;
+    if(self.config.legend) {
+      self.chartTranslateY += legendHeight
+          + self.config.padding;
+    }
 
     self.chart = self.svg.append('g')
         .attr('class', 'line-chart')
