@@ -97,7 +97,7 @@ var BarChart = (function(_super) {
 
     // x/y range
     self.rangeX = d3.scale.ordinal()
-        .rangeRoundBands([0, self.chartWidth], 0.2, 0.5)
+        .rangeRoundBands([0, self.chartWidth], 0.4, 0.5)
         .domain(self.chartData.map(function(d) {
           return d.name;
         }));
@@ -155,23 +155,6 @@ var BarChart = (function(_super) {
             .style('fill', function(d, i) {
               return self.config.color(i);
             });
-
-
-    // g.selectAll('.bar')
-    //     .data(self.chartData)
-    //     .enter().append('rect')
-    //         .attr('class', 'bar')
-    //         .attr('x', function(d) {
-    //           return self.rangeX(d.name);
-    //         })
-    //         .attr('y', function(d) {
-    //           return self.rangeY(d.values[0])
-    //         })
-    //         .attr('width', self.rangeX.rangeBand())
-    //         .attr('height', function(d) {
-    //           return self.chartHeight - self.rangeY(d.values[0]);
-    //         })
-    //         .style('fill', self.config.color(0));
   };
 
   // draw axises
