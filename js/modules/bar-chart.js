@@ -15,6 +15,9 @@ var BarChart = (function(_super) {
         || 30;
     self.config.chartMarginY = config.chartMarginY
         || 20;
+
+    self.config.type = config.type
+        || 'group';
   }
 
   // set chartData
@@ -25,9 +28,12 @@ var BarChart = (function(_super) {
 
     self.minY = 0;
     self.maxY = 0;
+    self.maxSumY = 0;
 
     for(var i in data) {
       var data = self.chartData[i];
+
+      var sum = 0;
 
       for(var j in data.values) {
         var d = data.values[j];
@@ -39,6 +45,15 @@ var BarChart = (function(_super) {
         if(d.value > self.maxY) {
           self.maxY = d.value;
         }
+
+        sum += d.value;
+        d.sum = sum;
+      }
+
+      data.sum = sum;
+
+      if(sum > self.maxSumY) {
+        self.maxSumY = sum;
       }
     }
 
@@ -108,8 +123,13 @@ var BarChart = (function(_super) {
         .rangeRoundBands([0, self.rangeX.rangeBand()]);
 
     self.rangeY = d3.scale.linear()
-        .range([self.chartHeight, 0])
-        .domain([self.minY, self.maxY]);
+        .range([self.chartHeight, 0]);
+
+    if(self.config.type == 'stack') {
+      self.rangeY.domain([self.minY, self.maxSumY]);
+    }else { // group as default
+      self.rangeY.domain([self.minY, self.maxY]);
+    }
 
     self.drawBars();
     self.drawAxises();
@@ -136,25 +156,44 @@ var BarChart = (function(_super) {
                   + ', 0)';
             });
 
-    group.selectAll('.bar')
-        .data(function(d) {
-          return d.values;
-        })
-        .enter().append('rect')
-            .attr('class', 'bar')
-            .attr('x', function(d) {
-              return self.groupX(d.name);
-            })
-            .attr('y', function(d) {
-              return self.rangeY(d.value);
-            })
-            .attr('width', self.groupX.rangeBand())
-            .attr('height', function(d) {
-              return self.chartHeight - self.rangeY(d.value);
-            })
-            .style('fill', function(d, i) {
-              return self.config.color(i);
-            });
+    if(self.config.type == 'stack') {
+      group.selectAll('.bar')
+          .data(function(d) {
+            return d.values;
+          })
+          .enter().append('rect')
+              .attr('class', 'bar')
+              .attr('y', function(d) {
+                return self.rangeY(d.sum);
+              })
+              .attr('width', self.rangeX.rangeBand())
+              .attr('height', function(d) {
+                return self.chartHeight - self.rangeY(d.value);
+              })
+              .style('fill', function(d, i) {
+                return self.config.color(i);
+              });
+    }else { // group as default
+      group.selectAll('.bar')
+          .data(function(d) {
+            return d.values;
+          })
+          .enter().append('rect')
+              .attr('class', 'bar')
+              .attr('x', function(d) {
+                return self.groupX(d.name);
+              })
+              .attr('y', function(d) {
+                return self.rangeY(d.value);
+              })
+              .attr('width', self.groupX.rangeBand())
+              .attr('height', function(d) {
+                return self.chartHeight - self.rangeY(d.value);
+              })
+              .style('fill', function(d, i) {
+                return self.config.color(i);
+              });
+    }
   };
 
   // draw axises
