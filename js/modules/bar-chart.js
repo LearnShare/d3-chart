@@ -18,6 +18,11 @@ var BarChart = (function(_super) {
 
     self.config.type = config.type
         || 'group';
+        
+    self.config.sortData = (config.sortData
+          && (typeof config.sortData == 'function'))
+        ? config.sortData
+        : undefined;
   }
 
   // set chartData
@@ -55,6 +60,10 @@ var BarChart = (function(_super) {
       if(sum > self.maxSumY) {
         self.maxSumY = sum;
       }
+    }
+
+    if(self.config.sortData) {
+      self.chartData.sort(self.config.sortData);
     }
 
     if(legendData) {

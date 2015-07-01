@@ -16,7 +16,7 @@ var PieChart = (function(_super) {
     self.config.sortData = (config.sortData
           && (typeof config.sortData == 'function'))
         ? config.sortData
-        : undefined,
+        : undefined;
 
     self.formater = d3.format(',.3f');
   }

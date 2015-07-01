@@ -50,7 +50,10 @@
         legendText: function(d, i) {
           return d;
         },
-        type: 'stack'
+        type: 'stack',
+        sortData: function(a, b) {
+          return b.sum - a.sum;
+        }
       });
 
       chart.setData([{
