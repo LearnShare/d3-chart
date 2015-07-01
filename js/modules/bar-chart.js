@@ -32,12 +32,12 @@ var BarChart = (function(_super) {
       for(var j in data.values) {
         var d = data.values[j];
 
-        if(d < self.minY) {
-          self.minY = d;
+        if(d.value < self.minY) {
+          self.minY = d.value;
         }
 
-        if(d > self.maxY) {
-          self.maxY = d;
+        if(d.value > self.maxY) {
+          self.maxY = d.value;
         }
       }
     }
@@ -101,6 +101,11 @@ var BarChart = (function(_super) {
         .domain(self.chartData.map(function(d) {
           return d.name;
         }));
+    self.groupX = d3.scale.ordinal()
+        .domain(self.chartData[0].values.map(function(d) {
+          return d.name;
+        }))
+        .rangeRoundBands([0, self.rangeX.rangeBand()]);
 
     self.rangeY = d3.scale.linear()
         .range([self.chartHeight, 0])
@@ -118,25 +123,55 @@ var BarChart = (function(_super) {
   BarChart.prototype.drawBars = function() {
     var self = this;
 
-    var g = self.chart.append('g')
-        .attr('class', 'bars');
+    var groups = self.chart.append('g')
+        .attr('class', 'groups');
 
-    g.selectAll('.bar')
+    var group = groups.selectAll('.group')
         .data(self.chartData)
+        .enter().append('g')
+            .attr('class', 'group')
+            .attr('transform', function(d) {
+              return 'translate('
+                  + self.rangeX(d.name)
+                  + ', 0)';
+            });
+
+    group.selectAll('.bar')
+        .data(function(d) {
+          return d.values;
+        })
         .enter().append('rect')
             .attr('class', 'bar')
             .attr('x', function(d) {
-              return self.rangeX(d.name);
+              return self.groupX(d.name);
             })
             .attr('y', function(d) {
-              return self.rangeY(d.values[0])
+              return self.rangeY(d.value);
             })
-            .attr('width', self.rangeX.rangeBand())
+            .attr('width', self.groupX.rangeBand())
             .attr('height', function(d) {
-              return self.chartHeight - self.rangeY(d.values[0]);
+              return self.chartHeight - self.rangeY(d.value);
             })
-            .style('fill', self.config.color(0));
+            .style('fill', function(d, i) {
+              return self.config.color(i);
+            });
 
+
+    // g.selectAll('.bar')
+    //     .data(self.chartData)
+    //     .enter().append('rect')
+    //         .attr('class', 'bar')
+    //         .attr('x', function(d) {
+    //           return self.rangeX(d.name);
+    //         })
+    //         .attr('y', function(d) {
+    //           return self.rangeY(d.values[0])
+    //         })
+    //         .attr('width', self.rangeX.rangeBand())
+    //         .attr('height', function(d) {
+    //           return self.chartHeight - self.rangeY(d.values[0]);
+    //         })
+    //         .style('fill', self.config.color(0));
   };
 
   // draw axises
