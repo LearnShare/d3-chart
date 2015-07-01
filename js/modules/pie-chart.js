@@ -13,8 +13,12 @@ var PieChart = (function(_super) {
 
     self.config.radius = config.radius
         || 0.8;
+    self.config.sortData = (config.sortData
+          && (typeof config.sortData == 'function'))
+        ? config.sortData
+        : undefined,
 
-    self.formater = d3.format(",.3f");
+    self.formater = d3.format(',.3f');
   }
   // set chartData
   PieChart.prototype.setData = function(data) {
@@ -22,7 +26,9 @@ var PieChart = (function(_super) {
 
     self.chartData = data;
 
-    // sortData
+    if(self.config.sortData) {
+      self.chartData.sort(self.config.sortData);
+    }
 
     var sum = 0;
     for(var i in self.chartData) {
