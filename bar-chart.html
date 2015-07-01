@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>D3-barChart</title>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+    }
+    #d3{
+      width: 100%;
+      height: 100%;
+    }
+    .axis {
+      font-size: 12px;
+    }
+    .axis path,
+    .axis tick,
+    .axis line {
+      fill: none;
+      stroke: rgba(0, 0, 0, 0.4);
+      stroke-width: 1px;
+      shape-rendering: crispEdges;
+    }
+    .axis text {
+      stroke: none;
+      fill: rgba(0, 0, 0, 0.6);
+    }
+  </style>
+  <script src="./js/lib/d3.js"></script>
+  <script src="./js/modules/chart.js"></script>
+  <script src="./js/modules/bar-chart.js"></script>
+  <script>
+    window.onload = function() {
+      var target = document.getElementById('d3');
+
+      var chart = new BarChart({
+        target: target, // DOM element
+        padding: 10,
+        autoResize: true, // true|false
+        title: 'D3-barChart',
+        subTitle: 'by Tag.Hu',
+        titleAlign: 'center', // center|left|right
+        legend: true, // false|true
+        legendAlign: 'right', // right/left
+        legendText: function(d, i) {
+          return d.name;
+        }
+      });
+
+      chart.setData([{
+        name: 'A',
+        values: [2, 3, 5]
+      }, {
+        name: 'B',
+        values: [4, 6, 2]
+      }, {
+        name: 'C',
+        values: [7, 4, 5]
+      }, {
+        name: 'D',
+        values: [1, 4, 3]
+      }, {
+        name: 'E',
+        values: [2, 0, 4]
+      }, {
+        name: 'F',
+        values: [5, 3, 7]
+      }, {
+        name: 'G',
+        values: [3, 3, 4]
+      }]);
+    };
+  </script>
+</head>
+<body>
+  <div id="d3">svg here</div>
+</body>
+</html>
