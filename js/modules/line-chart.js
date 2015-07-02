@@ -31,6 +31,8 @@ var LineChart = (function(_super) {
 
     self.config.type = config.type
         || 'line';
+    self.config.stack = config.stack
+        || false;
     self.config.line = config.line
         || 'segment';
     self.config.marker = config.marker
@@ -54,6 +56,7 @@ var LineChart = (function(_super) {
     self.dataX = [];
     self.minY = 0;
     self.maxY = 0;
+    self.maxSumY = 0;
 
     for(var i in data) {
       var data = self.chartData[i];
@@ -74,6 +77,16 @@ var LineChart = (function(_super) {
         if(d.y > self.maxY) {
           self.maxY = d.y;
         }
+
+        if(i > 0) {
+          d.sum = d.y + self.chartData[i - 1][j].sum;
+        }else {
+          d.sum = d.y;
+        }
+
+        if(d.sum > self.maxSumY) {
+          self.maxSumY = d.sum;
+        }
       }
     }
     self.dataX.sort(function(a, b) {
@@ -84,17 +97,6 @@ var LineChart = (function(_super) {
       self.config.legendData = legendData;
     }
 
-    self.draw();
-  };
-  
-  // append more data
-  LineChart.prototype.appendData = function(data, legendData) {
-    var self = this;
-
-    // self.chartData = data;
-    if(legendData) {
-      self.config.legendData = legendData;
-    }
     self.draw();
   };
 
@@ -158,8 +160,12 @@ var LineChart = (function(_super) {
           }));
     }
     self.rangeY = d3.scale.linear()
-        .range([self.chartHeight, 0])
-        .domain([self.minY, self.maxY]);
+        .range([self.chartHeight, 0]);
+    if(self.config.stack) {
+      self.rangeY.domain([self.minY, self.maxSumY]);
+    }else {
+      self.rangeY.domain([self.minY, self.maxY]);
+    }
 
     self.bisectX = d3.bisector(function(d) {
       return d.x;
@@ -202,20 +208,32 @@ var LineChart = (function(_super) {
         .interpolate(lineInterpolate)
         .x(function(d) {
           return self.rangeX(d.x);
-        })
-        .y(function(d) {
-          return self.rangeY(d.y);
         });
+    if(self.config.stack) {
+      line.y(function(d) {
+        return self.rangeY(d.sum);
+      });
+    }else {
+      line.y(function(d) {
+        return self.rangeY(d.y);
+      });
+    }
     // area path
     var area = d3.svg.area()
         .interpolate(lineInterpolate)
         .x(function(d) {
           return self.rangeX(d.x);
         })
-        .y0(self.chartHeight)
-        .y1(function(d) {
-          return self.rangeY(d.y);
-        });
+        .y0(self.chartHeight);
+    if(self.config.stack) {
+      area.y1(function(d) {
+        return self.rangeY(d.sum);
+      });
+    }else {
+      area.y1(function(d) {
+        return self.rangeY(d.y);
+      });
+    }
 
     // line/area
     var pathClass = 'line',
@@ -471,11 +489,19 @@ var LineChart = (function(_super) {
       y: self.rangeY(d.y)
     };
 
+    if(self.config.stack) {
+      point.y = self.rangeY(d.sum);
+    }
+
     var textElmt = self.markers[i].select('text'),
         rectElmt = self.markers[i].select('rect'),
         circleElmt = self.markers[i].select('circle');
     
-    textElmt.text(d.y);
+    if(self.config.stack) {
+      textElmt.text(d.sum);
+    }else {
+      textElmt.text(d.y);
+    }
 
     var textElmtRect = textElmt[0][0].getBoundingClientRect();
 
