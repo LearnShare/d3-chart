@@ -50,9 +50,9 @@ var Chart = (function() {
       legendDirection: config.legendDirection
           || 'horizontal',
       legendAlign: config.legendAlign
-          || 'right',
+          || 'center',
       legendVerticalAlign: config.legendVerticalAlign
-          || 'top',
+          || 'bottom',
       legendItemWidth: 18,
       legendItemHeight: 16,
       legendItemMargin: 4,
@@ -206,7 +206,7 @@ var Chart = (function() {
                   + ')';
             });
 
-        item.append('rect')
+        var rect = item.append('rect')
             .attr('width', self.config.legendItemWidth)
             .attr('height', self.config.legendItemHeight)
             .style('fill', function() {
@@ -216,11 +216,6 @@ var Chart = (function() {
         var textX = self.config.legendItemWidth
             + self.config.legendItemMargin;
         var textAlign = 'start';
-        if(self.config.legendAlign == 'right') {
-          textAlign = 'end';
-          textX = -self.config.legendItemWidth
-            - self.config.legendItemMargin;
-        }
 
         var text = item.append('text')
             .attr('dx', textX)
@@ -261,7 +256,26 @@ var Chart = (function() {
         }
       }
 
-      console.log(widthSum, heightSum, widthMax, heightMax);
+      if(self.config.legendAlign == 'left') {
+        legendTranslateX = self.config.padding;
+      }else if(self.config.legendAlign == 'center') {
+        legendTranslateX = (self.config.width
+            - widthMax) / 2
+            - self.config.padding;
+      }else { // right as default
+        legendTranslateX = self.config.width
+            - widthMax
+            - self.config.padding;
+      }
+
+      if(self.config.legendVerticalAlign == 'bottom') {
+        legendTranslateY = self.config.height
+            - self.config.padding
+            - heightMax;
+      }else {
+        legendTranslateY = self.titleYMax
+            + self.config.padding;
+      }
 
       legend.attr('transform', 'translate('
           + legendTranslateX
