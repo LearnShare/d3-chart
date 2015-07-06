@@ -42,6 +42,19 @@
       stroke-width: 1px;
       fill: #FFF;
     }
+    .marker.line {
+      stroke-width: 1px;
+      shape-rendering: crispEdges;
+      stroke: rgba(0, 0, 0, 0.2);
+    }
+    .marker.single .bg-rect {
+      stroke: rgba(0, 0, 0, 0.4);
+      shape-rendering: crispEdges;
+      fill: rgba(255, 255, 255, 0.6);
+    }
+    .marker.single text {
+      text-anchor: start;
+    }
   </style>
   <script src="./js/lib/d3.js"></script>
   <script src="./js/modules/chart.js"></script>
@@ -81,7 +94,8 @@
             return d3.time.format('%H:%M')(d);
           }
         },
-        mouseEvent: true
+        mouseEvent: true,
+        tipType: 'single' // separate|single
       });
 
       lineChart.setData([

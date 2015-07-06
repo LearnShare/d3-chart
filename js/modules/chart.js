@@ -178,7 +178,6 @@ var Chart = (function() {
     
     // legend
     if(self.config.legend) {
-
       // legend x
       var legendX = self.config.width
           - self.config.padding

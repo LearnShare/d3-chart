@@ -38,6 +38,9 @@ var LineChart = (function(_super) {
     self.config.marker = config.marker
         || 'none';
 
+    self.config.tipType = config.tipType
+        || 'separate';
+
     self.xFormater = function(d) {
       return d;
     };
@@ -330,40 +333,89 @@ var LineChart = (function(_super) {
             + self.chartTranslateY
             + ')');
 
-    self.markers = [];
-
-    var marker = overlay.append('g')
-        .attr('class', 'marker')
-        .style('display', 'none');
-
-    marker.append('rect')
-        .style('fill', '#666');
-    marker.append('text')
-        .style('fill', '#FFF')
-        .style('font-size', '12px')
-        .style('text-anchor', 'middle');
-
-    self.markerX = marker;
-
-    var length = self.chartData.length;
-    for(var i = 0; i < length; i++) {
-      var marker = overlay.append('g')
-          .attr('class', 'marker')
+    // single tip
+    if(self.config.tipType == 'single') {
+      self.markerLine = overlay.append('line')
+          .attr('class', 'marker line')
+          .attr('y1', 0)
+          .attr('y2', self.chartHeight)
+          .style('display', 'none');
+      self.markerSingle = overlay.append('g')
+          .attr('class', 'marker single')
           .style('display', 'none');
 
-      marker.append('circle')
-          .attr('cx', -5)
-          .attr('cy', 0)
-          .attr('r', 3)
-          .style('stroke', self.config.color(i));
-      marker.append('rect')
-          .style('stroke', self.config.color(i));
-      marker.append('text')
+      self.markerSingle.append('rect')
+          .attr('class', 'bg-rect');
+      self.markerSingle.append('text')
+          .attr('class', 'text-x')
+          .attr('dx', 10)
+          .attr('dy', self.config.legendItemHeight - 3 + 10)
           .style('fill', '#333')
+          .style('font-size', self.config.legendItemHeight - 4);
+
+      var length = self.chartData.length;
+      for(var i = 0; i < length; i++) {
+        var g = self.markerSingle.append('g')
+            .attr('class', 'item')
+            .attr('transform', function(d) {
+              return 'translate(10, '
+                  + ((parseInt(i) + 1) * (self.config.legendItemHeight
+                      + self.config.legendItemMargin) + 10)
+                  + ')';
+            });
+
+        g.append('rect')
+            .attr('width', self.config.legendItemWidth)
+            .attr('height', self.config.legendItemHeight)
+            .style('fill', function(d) {
+              return self.config.color(i);
+            });
+        g.append('text')
+            .attr('class', 'text-'
+                + i)
+            .attr('x', self.config.legendItemWidth
+                + self.config.legendItemMargin)
+            .attr('dy', self.config.legendItemHeight - 3)
+            .style('font-size', self.config.legendItemHeight - 4)
+            .style('fill', '#333')
+            .style('font-size', '12px');
+      }
+    }else { // separate tips
+      self.markers = [];
+
+      var marker = overlay.append('g')
+          .attr('class', 'marker x')
+          .style('display', 'none');
+
+      marker.append('rect')
+          .style('fill', '#666');
+      marker.append('text')
+          .style('fill', '#FFF')
           .style('font-size', '12px')
           .style('text-anchor', 'middle');
 
-      self.markers.push(marker);
+      self.markerX = marker;
+
+      var length = self.chartData.length;
+      for(var i = 0; i < length; i++) {
+        var marker = overlay.append('g')
+            .attr('class', 'marker line')
+            .style('display', 'none');
+
+        marker.append('circle')
+            .attr('cx', -5)
+            .attr('cy', 0)
+            .attr('r', 3)
+            .style('stroke', self.config.color(i));
+        marker.append('rect')
+            .style('stroke', self.config.color(i));
+        marker.append('text')
+            .style('fill', '#333')
+            .style('font-size', '12px')
+            .style('text-anchor', 'middle');
+
+        self.markers.push(marker);
+      }
     }
 
     var overlayRect = overlay.append('rect')
@@ -402,8 +454,6 @@ var LineChart = (function(_super) {
     // 变化检测，同样的 d.x 不重复移动
     if(d.x != self.dxCache) {
       self.dxCache = d.x;
-    
-      self.moveMarkerX(d);
 
       for(var i in self.chartData) {
         var data = self.chartData[i];
@@ -419,6 +469,8 @@ var LineChart = (function(_super) {
           self.moveMarker(i, d);
         }
       }
+    
+      self.moveMarkerX(d);
     }
   };
 
@@ -431,53 +483,104 @@ var LineChart = (function(_super) {
       y: self.rangeY(d.y)
     };
 
-    var textElmt = self.markerX.select('text'),
-        rectElmt = self.markerX.select('rect');
-
     var formater = function(d) {
       return d;
     };
     if(self.config.xFormat == 'time') {
       formater = d3.time.format(self.config.timeFormat);
     }
-    
-    textElmt.text(formater(d.x));
 
-    var textElmtRect = textElmt[0][0].getBoundingClientRect();
+    if(self.config.tipType == 'single') {
+      var textElmt = self.markerSingle.select('.text-x'),
+          rectElmt = self.markerSingle.select('.bg-rect');
+      textElmt.text(formater(d.x));
 
-    var textElmtWidth = textElmtRect.width,
-        textElmtHeight = textElmtRect.height;
+      var rectWidth = 0,
+          rectHeight = 0;
 
-    var rectWidth = textElmtWidth + 20,
-        rectHeight = textElmtHeight + 10;
+      var textElmtRect = textElmt[0][0].getBoundingClientRect();
 
-    if(rectWidth < 40) {
-      rectWidth = 40;
+      if(rectWidth < textElmtRect.width) {
+        rectWidth = textElmtRect.width;
+      }
+
+      var length = self.chartData.length;
+      rectHeight = (length + 1)
+          * (self.config.legendItemHeight
+            + self.config.legendItemMargin)
+          + 20;
+      for(var i = 0; i < length; i++) {
+        textElmt = self.markerSingle.select('.text-'
+            + i);
+
+        textElmtRect = textElmt[0][0].getBoundingClientRect();
+
+        var width = textElmtRect.width
+            + self.config.legendItemWidth
+            + self.config.legendItemMargin;
+        if(rectWidth < width) {
+          rectWidth = width;
+        }
+      }
+      rectWidth += 20;
+
+      rectElmt.attr('width', rectWidth)
+          .attr('height', rectHeight);
+
+      var translateX = point.x + 5;
+      // right border
+      if(translateX + rectWidth > self.chartWidth) {
+        translateX = point.x - rectWidth - 5;
+      }
+
+      self.markerLine.attr('x1', point.x)
+          .attr('x2', point.x);
+
+      self.markerSingle.attr('transform', 'translate('
+          + translateX
+          + ', 0)');
+    }else {
+      var textElmt = self.markerX.select('text'),
+          rectElmt = self.markerX.select('rect');
+      
+      textElmt.text(formater(d.x));
+
+      var textElmtRect = textElmt[0][0].getBoundingClientRect();
+
+      var textElmtWidth = textElmtRect.width,
+          textElmtHeight = textElmtRect.height;
+
+      var rectWidth = textElmtWidth + 20,
+          rectHeight = textElmtHeight + 10;
+
+      if(rectWidth < 40) {
+        rectWidth = 40;
+      }
+
+      textElmt.attr('dy', (textElmtHeight + rectHeight) / 2 - 3);
+
+      rectElmt.attr('width', rectWidth)
+          .attr('height', rectHeight)
+          .attr('transform', 'translate('
+              + -(rectWidth / 2)
+              + ', 0)');
+
+      var translateX = point.x;
+      // left border
+      if(point.x - rectWidth / 2 < 0) {
+        translateX = rectWidth / 2;
+      }
+      // right border
+      if(point.x + rectWidth / 2 > self.chartWidth) {
+        translateX = self.chartWidth - rectWidth / 2;
+      }
+      self.markerX.style('display', 'block')
+          .attr('transform', 'translate('
+              + translateX
+              + ', '
+              + self.chartHeight
+              + ')');
     }
-
-    textElmt.attr('dy', (textElmtHeight + rectHeight) / 2 - 3);
-
-    rectElmt.attr('width', rectWidth)
-        .attr('height', rectHeight)
-        .attr('transform', 'translate('
-            + -(rectWidth / 2)
-            + ', 0)');
-
-    var translateX = point.x;
-    // left border
-    if(point.x - rectWidth / 2 < 0) {
-      translateX = rectWidth / 2;
-    }
-    // right border
-    if(point.x + rectWidth / 2 > self.chartWidth) {
-      translateX = self.chartWidth - rectWidth / 2;
-    }
-    self.markerX.style('display', 'block')
-        .attr('transform', 'translate('
-            + translateX
-            + ', '
-            + self.chartHeight
-            + ')');
   };
 
   // mark point i @ (d.x, d.y)
@@ -493,83 +596,99 @@ var LineChart = (function(_super) {
       point.y = self.rangeY(d.sum);
     }
 
-    var textElmt = self.markers[i].select('text'),
-        rectElmt = self.markers[i].select('rect'),
-        circleElmt = self.markers[i].select('circle');
-    
-    if(self.config.stack) {
-      textElmt.text(d.sum);
+    if(self.config.tipType == 'single') {
+      var textElmt = self.markerSingle.select('.text-'
+          + i);
+      
+      if(self.config.stack) {
+        textElmt.text(d.sum);
+      }else {
+        textElmt.text(d.y);
+      }
     }else {
-      textElmt.text(d.y);
+      var textElmt = self.markers[i].select('text'),
+          rectElmt = self.markers[i].select('rect'),
+          circleElmt = self.markers[i].select('circle');
+      
+      if(self.config.stack) {
+        textElmt.text(d.sum);
+      }else {
+        textElmt.text(d.y);
+      }
+
+      var textElmtRect = textElmt[0][0].getBoundingClientRect();
+
+      var textElmtWidth = textElmtRect.width,
+          textElmtHeight = textElmtRect.height;
+
+      var rectWidth = textElmtWidth + 20,
+          rectHeight = textElmtHeight + 10;
+
+      if(rectWidth < 40) {
+        rectWidth = 40;
+      }
+
+      textElmt.attr('transform', 'translate('
+          + (rectWidth / 2)
+          + ', '
+          + (textElmtHeight / 2 - 3)
+          + ')');
+
+      rectElmt.attr('width', rectWidth)
+          .attr('height', rectHeight)
+          .attr('transform', 'translate(0, -'
+              + (rectHeight / 2)
+              + ')');
+
+      var circleX = -5,
+          circleY = 0;
+
+      var translateX = point.x + 5;
+      // right border
+      if(translateX + rectWidth > self.chartWidth) {
+        circleX = rectWidth + 5;
+
+        translateX = point.x - rectWidth - 5;
+      }
+
+      var translateY = point.y;
+      // top border
+      if(translateY - rectHeight / 2 < 0) {
+        translateY = rectHeight / 2;
+        circleY = point.y - translateY;
+      }
+      // bottom border
+      if(translateY + rectHeight / 2 > self.chartHeight) {
+        translateY = self.chartHeight - rectHeight / 2;
+        circleY = point.y - translateY;
+      }
+
+      circleElmt.attr('cx', circleX)
+          .attr('cy', circleY);
+
+      self.markers[i].style('display', 'block')
+          .attr('transform', 'translate('
+              + translateX
+              + ', '
+              + translateY
+              + ')');
     }
-
-    var textElmtRect = textElmt[0][0].getBoundingClientRect();
-
-    var textElmtWidth = textElmtRect.width,
-        textElmtHeight = textElmtRect.height;
-
-    var rectWidth = textElmtWidth + 20,
-        rectHeight = textElmtHeight + 10;
-
-    if(rectWidth < 40) {
-      rectWidth = 40;
-    }
-
-    textElmt.attr('transform', 'translate('
-        + (rectWidth / 2)
-        + ', '
-        + (textElmtHeight / 2 - 3)
-        + ')');
-
-    rectElmt.attr('width', rectWidth)
-        .attr('height', rectHeight)
-        .attr('transform', 'translate(0, -'
-            + (rectHeight / 2)
-            + ')');
-
-    var circleX = -5,
-        circleY = 0;
-
-    var translateX = point.x + 5;
-    // right border
-    if(translateX + rectWidth > self.chartWidth) {
-      circleX = rectWidth + 5;
-
-      translateX = point.x - rectWidth - 5;
-    }
-
-    var translateY = point.y;
-    // top border
-    if(translateY - rectHeight / 2 < 0) {
-      translateY = rectHeight / 2;
-      circleY = point.y - translateY;
-    }
-    // bottom border
-    if(translateY + rectHeight / 2 > self.chartHeight) {
-      translateY = self.chartHeight - rectHeight / 2;
-      circleY = point.y - translateY;
-    }
-
-    circleElmt.attr('cx', circleX)
-        .attr('cy', circleY);
-
-    self.markers[i].style('display', 'block')
-        .attr('transform', 'translate('
-            + translateX
-            + ', '
-            + translateY
-            + ')');
   };
 
   // show all markers
   LineChart.prototype.showMarkers = function() {
     var self = this;
 
-    self.markerX.style('display', 'block');
-    for(var i in self.markers) {
-      var marker = self.markers[i];
+    if(self.config.tipType == 'single') {
+      self.markerLine.style('display', 'block');
+      self.markerSingle.style('display', 'block');
+    }else {
+      self.markerX.style('display', 'block');
+      for(var i in self.markers) {
+        var marker = self.markers[i];
 
-      marker.style('display', 'block');
+        marker.style('display', 'block');
+      }
     }
   };
 
@@ -577,11 +696,16 @@ var LineChart = (function(_super) {
   LineChart.prototype.hideMarkers = function() {
     var self = this;
 
-    self.markerX.style('display', 'none');
-    for(var i in self.markers) {
-      var marker = self.markers[i];
+    if(self.config.tipType == 'single') {
+      self.markerLine.style('display', 'none');
+      self.markerSingle.style('display', 'none');
+    }else {
+      self.markerX.style('display', 'none');
+      for(var i in self.markers) {
+        var marker = self.markers[i];
 
-      marker.style('display', 'none');
+        marker.style('display', 'none');
+      }
     }
   };
   
