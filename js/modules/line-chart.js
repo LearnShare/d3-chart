@@ -20,6 +20,8 @@ var LineChart = (function(_super) {
         || 'value';
     self.config.timeFormat = config.timeFormat
         || '%Y-%m-%d %H:%M:%S';
+    self.config.yFormat = config.yFormat
+        || 'value';
     var xTick = function(d) {
       return d;
     };
@@ -98,6 +100,11 @@ var LineChart = (function(_super) {
 
     if(legendData) {
       self.config.legendData = legendData;
+    }
+
+    if(self.config.yFormat == 'percentage') {
+      self.maxY = 100;
+      self.maxSumY = 100;
     }
 
     self.draw();
