@@ -146,9 +146,11 @@ var LineChart = (function(_super) {
         - self.chartTranslateY
         - self.config.padding
         - self.config.chartMarginY;
-    if(self.config.legendVerticalAlign == 'bottom') {
-      self.chartHeight -= self.legendYMax
-          + self.config.padding;
+    if(self.config.legend
+        && self.config.legendVerticalAlign == 'bottom') {
+      self.chartHeight = self.chartHeight
+          - self.legendYMax
+          - self.config.padding;
     }
 
     if(self.chartWidth <= 0
