@@ -273,7 +273,7 @@ var LineChart = (function(_super) {
     var self = this;
 
     var xTickStep = 60,
-        yTickStep = 40;
+        yTickStep = 60;
     if(window.innerWidth >= 700) {
       xTickStep = 80;
     }
@@ -287,8 +287,6 @@ var LineChart = (function(_super) {
     }
     if(yTickTimes >= 12) {
       yTickTimes = 12;
-    }else {
-      yTickTimes = 6;
     }
 
     // x/y axises
