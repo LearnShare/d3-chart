@@ -256,12 +256,13 @@ var Chart = (function() {
         }
       }
 
+      self.legendYMax = heightMax;
+
       if(self.config.legendAlign == 'left') {
         legendTranslateX = self.config.padding;
       }else if(self.config.legendAlign == 'center') {
         legendTranslateX = (self.config.width
-            - widthMax) / 2
-            - self.config.padding;
+            - widthMax) / 2;
       }else { // right as default
         legendTranslateX = self.config.width
             - widthMax
