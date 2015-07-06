@@ -47,8 +47,12 @@ var Chart = (function() {
           || false,
       legendData: config.legendData
           || [],
+      legendDirection: config.legendDirection
+          || 'horizontal',
       legendAlign: config.legendAlign
           || 'right',
+      legendVerticalAlign: config.legendVerticalAlign
+          || 'top',
       legendItemWidth: 18,
       legendItemHeight: 16,
       legendItemMargin: 4,
@@ -177,61 +181,93 @@ var Chart = (function() {
     var self = this;
     
     // legend
-    if(self.config.legend) {
-      // legend x
-      var legendX = self.config.width
-          - self.config.padding
-          - self.config.legendItemWidth;
-      var textX = legendX
-          - self.config.legendItemMargin;
-      var textAlign = 'end';
-      // align left
-      if(self.config.legendAlign == 'left') {
-        legendX = self.config.padding;
-        textX = legendX
-            + self.config.legendItemWidth
-            + self.config.legendItemMargin;
-        textAlign = 'start';
-      }
+    if(self.config.legend
+        && self.config.legendData.length) {
+      var legendTranslateX = 0,
+          legendTranslateY = 0;
 
       var legend = self.svg.append('g')
-          .attr('class', 'legend')
-          .attr('transform', 'translate(0, '
-              + self.config.padding
-              + ')');
+          .attr('class', 'legend');
 
-      var item = legend.selectAll('.item')
-          .data(self.config.legendData)
-          .enter().append('g')
+      var length = self.config.legendData.length;
+      // all legend.item width/height sum
+      var widthSum = 0,
+          heightSum = 0,
+          widthMax = 0,
+          heightMax = 0;
+      for(var i = 0; i < length; i++) {
+        var item = legend.append('g')
             .attr('class', 'item')
-            .attr('transform', function(d, i) {
-              return 'translate(0, '
-                  + (i * (self.config.legendItemHeight
-                      + self.config.legendItemMargin)
-                      + self.titleYMax)
+            .attr('transform', function() {
+              return 'translate('
+                  + widthSum
+                  + ', '
+                  + heightSum
                   + ')';
             });
 
-      item.append('rect')
-          .attr('x', legendX)
-          .attr('width', self.config.legendItemWidth)
-          .attr('height', self.config.legendItemHeight)
-          .style('fill', function(d, i) {
-            return self.config.color(i);
-          });
+        item.append('rect')
+            .attr('width', self.config.legendItemWidth)
+            .attr('height', self.config.legendItemHeight)
+            .style('fill', function() {
+              return self.config.color(i);
+            });
 
-      item.append('text')
-          .attr('x', textX)
-          .attr('dy', self.config.legendItemHeight - 3)
-          .style('font-size', self.config.legendItemHeight - 4)
-          .style('text-anchor', textAlign)
-          .text(function(d, i) {
-            if(self.config.legendText) {
-              return self.config.legendText(d, i);
-            }else {
-              return d;
-            }
-          });
+        var textX = self.config.legendItemWidth
+            + self.config.legendItemMargin;
+        var textAlign = 'start';
+        if(self.config.legendAlign == 'right') {
+          textAlign = 'end';
+          textX = -self.config.legendItemWidth
+            - self.config.legendItemMargin;
+        }
+
+        var text = item.append('text')
+            .attr('dx', textX)
+            .attr('dy', self.config.legendItemHeight - 3)
+            .style('font-size', self.config.legendItemHeight - 4)
+            .style('text-anchor', textAlign)
+            .text(function() {
+              var d = self.config.legendData[i];
+
+              if(self.config.legendText) {
+                return self.config.legendText(d, i);
+              }else {
+                return d;
+              }
+            });
+
+        var textElmtRect = text[0][0].getBoundingClientRect();
+
+        var itemWidth = self.config.legendItemWidth
+            + self.config.legendItemMargin
+            + textElmtRect.width;
+
+        if(self.config.legendDirection == 'horizontal') {
+          widthSum += itemWidth
+              + self.config.legendItemMargin
+                  * 2;
+          heightSum += 0;
+          widthMax = widthSum;
+          heightMax = self.config.legendItemHeight;
+        }else {
+          widthSum += 0;
+          heightSum += self.config.legendItemHeight
+              + self.config.legendItemMargin;
+          if(widthMax < itemWidth) {
+            widthMax = itemWidth;
+          }
+          heightMax = heightSum;
+        }
+      }
+
+      console.log(widthSum, heightSum, widthMax, heightMax);
+
+      legend.attr('transform', 'translate('
+          + legendTranslateX
+          + ', '
+          + legendTranslateY
+          + ')')
     }
   };
   
