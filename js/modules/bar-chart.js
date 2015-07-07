@@ -82,15 +82,11 @@ var BarChart = (function(_super) {
       return;
     }
 
-    var legendHeight = self.config.legendData.length
-        * (self.config.legendItemHeight
-          + self.config.legendItemMargin);
-
     self.chartTranslateY = self.config.padding
         + self.titleYMax;
-    if(self.config.legend) {
-      self.chartTranslateY += legendHeight
-          + self.config.padding;
+    if(self.config.legendVerticalAlign == 'top') {
+      self.chartTranslateY += self.config.padding
+          + self.legendYMax;
     }
 
     self.chart = self.svg.append('g')
@@ -113,6 +109,12 @@ var BarChart = (function(_super) {
         - self.chartTranslateY
         - self.config.padding
         - self.config.chartMarginY;
+    if(self.config.legend
+        && self.config.legendVerticalAlign == 'bottom') {
+      self.chartHeight = self.chartHeight
+          - self.legendYMax
+          - self.config.padding;
+    }
 
     if(self.chartWidth <= 0
         || self.chartHeight <= 0) {
