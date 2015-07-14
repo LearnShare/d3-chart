@@ -13,6 +13,8 @@ var PieChart = (function(_super) {
 
     self.config.radius = config.radius
         || 0.8;
+    self.config.anglePadding = config.anglePadding
+        || 0;
     self.config.sortData = (config.sortData
           && (typeof config.sortData == 'function'))
         ? config.sortData
@@ -110,6 +112,7 @@ var PieChart = (function(_super) {
         .outerRadius(self.chartR1);
 
     self.pie = d3.layout.pie()
+      .padAngle(self.config.anglePadding)
       .sort(null)
       .value(function(d) {
         return d.value;
