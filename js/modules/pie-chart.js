@@ -15,6 +15,8 @@ var PieChart = (function(_super) {
         || 0.8;
     self.config.anglePadding = config.anglePadding
         || 0;
+    self.config.cornerRadius = config.cornerRadius
+        || 0;
     self.config.sortData = (config.sortData
           && (typeof config.sortData == 'function'))
         ? config.sortData
@@ -109,7 +111,8 @@ var PieChart = (function(_super) {
 
     self.arc = d3.svg.arc()
         .innerRadius(self.chartR0)
-        .outerRadius(self.chartR1);
+        .outerRadius(self.chartR1)
+        .cornerRadius(self.config.cornerRadius);
 
     self.pie = d3.layout.pie()
       .padAngle(self.config.anglePadding)
