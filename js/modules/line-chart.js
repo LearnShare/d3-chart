@@ -16,6 +16,9 @@ var LineChart = (function(_super) {
     self.config.chartMarginY = config.chartMarginY
         || 20;
 
+    self.config.canvas = config.canvas
+        || false;
+
     self.config.xFormat = config.xFormat
         || 'value';
     self.config.timeFormat = config.timeFormat
@@ -136,6 +139,12 @@ var LineChart = (function(_super) {
             + ')'
         );
 
+    self.pen.translate(self.config.padding
+        + self.config.chartMarginX,
+        self.chartTranslateY);
+    self.pen.fillStyle = 'rgba(0, 0, 0, 0.1)';
+    self.pen.strokeStyle = '#AAF';
+
     // chart size
     self.chartWidth = self.config.width
         - self.config.padding * 2
@@ -206,6 +215,16 @@ var LineChart = (function(_super) {
 
   // draw line
   LineChart.prototype.drawLine = function(data, i) {
+    var self = this;
+
+    if(self.config.canvas) {
+      self.drawLineToCanvas(data, i);
+    }else {
+      self.drawLineToSvg(data, i);
+    }
+  };
+  // draw to svg
+  LineChart.prototype.drawLineToSvg = function(data, i) {
     var self = this;
 
     // line interpolate
@@ -280,6 +299,49 @@ var LineChart = (function(_super) {
                 return 0.7;
               }
             });
+  };
+  // draw to canvas
+  LineChart.prototype.drawLineToCanvas = function(data, i) {
+    var self = this;
+
+    // set pen style
+    var rgb = self.hexToRgb(self.config.color(i));
+
+    self.pen.strokeStyle = self.config.color(i);
+    self.pen.fillStyle = 'rgba('
+        + rgb.r
+        + ', '
+        + rgb.g
+        + ', '
+        + rgb.b
+        + ', 0.7)';
+
+    self.pen.beginPath();
+    if(self.config.type == 'area') {
+      self.pen.moveTo(0, self.chartHeight);
+    }
+    for(var j in data) {
+      var d = data[j];
+
+      var p = {
+        x: self.rangeX(d.x),
+        y: self.rangeY(d.y)
+      };
+
+      if(j == 0
+          && self.config.type == 'line') {
+        self.pen.moveTo(p.x, p.y);
+      }else {
+        self.pen.lineTo(p.x, p.y);
+      }
+    }
+    if(self.config.type == 'area') {
+      self.pen.lineTo(self.chartWidth, self.chartHeight);
+      self.pen.lineTo(0, self.chartHeight);
+      self.pen.fill();
+    }else {
+      self.pen.stroke();
+    }
   };
 
   // draw axises
