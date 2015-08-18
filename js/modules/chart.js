@@ -115,11 +115,22 @@ var Chart = (function() {
     // clean svg in target
     self.config.target.innerHTML = '';
 
+    // canvas
+    self.canvas = document.createElement('canvas');
+    self.config.target.appendChild(self.canvas);
+    self.pen = self.canvas.getContext('2d');
+
+    self.canvas.width = self.config.width;
+    self.canvas.height = self.config.height;
+
     // svg
     self.svg = d3.select(self.config.target)
         .append('svg')
             .attr('width', self.config.width)
-            .attr('height', self.config.height);
+            .attr('height', self.config.height)
+            .style('position', 'absolute')
+            .style('top', '0')
+            .style('left', '0');
 
     self.drawTitle();
     self.drawLegend();
@@ -293,6 +304,31 @@ var Chart = (function() {
     self.config.height = self.config.target.clientHeight;
 
     self.draw();
+  };
+
+  Chart.prototype.hexToRgb = function(hex) {
+    var rgb = {
+      r: 0,
+      g: 0,
+      b: 0
+    };
+    if(hex[0] === '#') {
+      hex = hex.substring(1);
+    }
+    if(hex.length == 3) {
+      hex = hex[0] + hex[0]
+          + hex[1] + hex[1]
+          + hex[2] + hex[2];
+    }
+
+    rgb.r = new Number('0x'
+        + hex.substr(0, 2)).valueOf();
+    rgb.g = new Number('0x'
+        + hex.substr(2, 2)).valueOf();
+    rgb.b = new Number('0x'
+        + hex.substr(4, 2)).valueOf();
+
+    return rgb;
   };
   
   return Chart;
