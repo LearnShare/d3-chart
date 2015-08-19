@@ -323,7 +323,8 @@ var LineChart = (function(_super) {
         dr = data[j + 1];
       }
 
-      if(self.config.line == 'segment') {
+      if(self.config.line == 'segment'
+          || self.config.line == 'curve') {
         points.push({
           x: self.rangeX(d.x),
           y: self.rangeY(d.y)
@@ -343,7 +344,7 @@ var LineChart = (function(_super) {
             x: (self.rangeX(d.x) + self.rangeX(dl.x)) / 2,
             y: self.rangeY(d.y)
           });
-          
+
           if(j >= data.length - 1) {
             points.push({
               x: self.rangeX(d.x),
