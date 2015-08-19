@@ -175,12 +175,13 @@ var PieChart = (function(_super) {
       self.pen.moveTo(c.x, c.y);
       self.pen.arc(c.x,
           c.y,
-          self.chartR1,
+          self.chartR0,
           (sum / 100 * 2 - 1 / 2) * Math.PI,
           ((sum + d.percentage) / 100 * 2 - 1 / 2) * Math.PI);
       self.pen.lineTo(c.x, c.y);
-      sum += d.percentage;
       self.pen.fill();
+
+      sum += d.percentage;
     }
   };
   
