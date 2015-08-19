@@ -175,7 +175,7 @@ var PieChart = (function(_super) {
       self.pen.moveTo(c.x, c.y);
       self.pen.arc(c.x,
           c.y,
-          self.chartR0,
+          self.chartR1,
           (sum / 100 * 2 - 1 / 2) * Math.PI,
           ((sum + d.percentage) / 100 * 2 - 1 / 2) * Math.PI);
       self.pen.lineTo(c.x, c.y);
@@ -183,6 +183,16 @@ var PieChart = (function(_super) {
 
       sum += d.percentage;
     }
+
+    self.pen.fillStyle = '#FFF';
+
+    self.pen.beginPath();
+    self.pen.arc(c.x,
+        c.y,
+        self.chartR0,
+        0,
+        2 * Math.PI);
+    self.pen.fill();
   };
   
   return PieChart;
