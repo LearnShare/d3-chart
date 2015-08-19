@@ -304,6 +304,67 @@ var LineChart = (function(_super) {
   LineChart.prototype.drawLineToCanvas = function(data, i) {
     var self = this;
 
+    // get all points for drawing
+    var points = [];
+    if(self.config.type == 'area') {
+      points.push({
+        x: 0,
+        y: self.chartHeight
+      });
+    }
+    for(var j in data) {
+      var dl = null;
+      var d = data[j];
+      var dr = null;
+      if(j > 0) {
+        dl = data[j - 1];
+      }
+      if(j < data.length - 1) {
+        dr = data[j + 1];
+      }
+
+      if(self.config.line == 'segment'
+          || self.config.line == 'curve') {
+        points.push({
+          x: self.rangeX(d.x),
+          y: self.rangeY(d.y)
+        });
+      }else if(self.config.line == 'step') {
+        if(j <= 0) {
+          points.push({
+            x: self.rangeX(d.x),
+            y: self.rangeY(d.y)
+          });
+        }else {
+          points.push({
+            x: (self.rangeX(d.x) + self.rangeX(dl.x)) / 2,
+            y: self.rangeY(dl.y)
+          });
+          points.push({
+            x: (self.rangeX(d.x) + self.rangeX(dl.x)) / 2,
+            y: self.rangeY(d.y)
+          });
+
+          if(j >= data.length - 1) {
+            points.push({
+              x: self.rangeX(d.x),
+              y: self.rangeY(d.y)
+            });
+          }
+        }
+      }
+    }
+    if(self.config.type == 'area') {
+      points.push({
+        x: self.chartWidth,
+        y: self.chartHeight
+      });
+      points.push({
+        x: 0,
+        y: self.chartHeight
+      });
+    }
+
     // set pen style
     var rgb = self.hexToRgb(self.config.color(i));
 
@@ -317,27 +378,16 @@ var LineChart = (function(_super) {
         + ', 0.7)';
 
     self.pen.beginPath();
-    if(self.config.type == 'area') {
-      self.pen.moveTo(0, self.chartHeight);
-    }
-    for(var j in data) {
-      var d = data[j];
+    for(var k in points) {
+      var p = points[k];
 
-      var p = {
-        x: self.rangeX(d.x),
-        y: self.rangeY(d.y)
-      };
-
-      if(j == 0
-          && self.config.type == 'line') {
+      if(k == 0) {
         self.pen.moveTo(p.x, p.y);
       }else {
         self.pen.lineTo(p.x, p.y);
       }
     }
     if(self.config.type == 'area') {
-      self.pen.lineTo(self.chartWidth, self.chartHeight);
-      self.pen.lineTo(0, self.chartHeight);
       self.pen.fill();
     }else {
       self.pen.stroke();
