@@ -74,6 +74,11 @@ var PieChart = (function(_super) {
             + ')'
         );
 
+    self.pen.translate(self.config.padding,
+        self.chartTranslateY);
+    self.pen.fillStyle = 'rgba(0, 0, 0, 0.1)';
+    self.pen.strokeStyle = '#AAF';
+
     // chart size
     self.chartWidth = self.config.width
         - self.config.padding * 2;
@@ -109,6 +114,14 @@ var PieChart = (function(_super) {
   PieChart.prototype.drawPie = function() {
     var self = this;
 
+    self.drawPieOnSvg();
+    self.drawPieOnCanvas();
+  };
+
+  // draw on svg
+  PieChart.prototype.drawPieOnSvg = function() {
+    var self = this;
+
     self.arc = d3.svg.arc()
         .innerRadius(self.chartR0)
         .outerRadius(self.chartR1)
@@ -123,6 +136,7 @@ var PieChart = (function(_super) {
 
     self.chart.append('g')
         .attr('class', 'pie')
+        .style('opacity', 0.2)
         .attr('transform', 'translate('
             + self.chartWidth / 2
             + ', '
@@ -140,6 +154,34 @@ var PieChart = (function(_super) {
         .style('fill', function(d, i) {
           return self.config.color(i);
         });
+  };
+  // draw on canvas
+  PieChart.prototype.drawPieOnCanvas = function() {
+    var self = this;
+
+    var c = {
+      x: self.chartWidth / 2,
+      y: self.chartHeight / 2
+    };
+    var sum = 0;
+
+    // get data from arc/pie, or get data from chartData
+    for(var i in self.chartData) {
+      var d = self.chartData[i];
+      
+      self.pen.fillStyle = self.config.color(i);
+
+      self.pen.beginPath();
+      self.pen.moveTo(c.x, c.y);
+      self.pen.arc(c.x,
+          c.y,
+          self.chartR1,
+          (sum / 100 * 2 - 1 / 2) * Math.PI,
+          ((sum + d.percentage) / 100 * 2 - 1 / 2) * Math.PI);
+      self.pen.lineTo(c.x, c.y);
+      sum += d.percentage;
+      self.pen.fill();
+    }
   };
   
   return PieChart;
