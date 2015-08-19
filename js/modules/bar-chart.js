@@ -16,6 +16,9 @@ var BarChart = (function(_super) {
     self.config.chartMarginY = config.chartMarginY
         || 20;
 
+    self.config.canvas = config.canvas
+        || false;
+
     self.config.type = config.type
         || 'group';
         
@@ -99,6 +102,12 @@ var BarChart = (function(_super) {
             + ')'
         );
 
+    self.pen.translate(self.config.padding
+        + self.config.chartMarginX,
+        self.chartTranslateY);
+    self.pen.fillStyle = 'rgba(0, 0, 0, 0.1)';
+    self.pen.strokeStyle = '#AAF';
+
     // chart size
     self.chartWidth = self.config.width
         - self.config.padding * 2
@@ -154,6 +163,17 @@ var BarChart = (function(_super) {
   BarChart.prototype.drawBars = function() {
     var self = this;
 
+    if(self.config.canvas) {
+      self.drawBarsToCanvas();
+    }else {
+      self.drawBarsToSvg();
+    }
+  };
+
+  // draw to svg
+  BarChart.prototype.drawBarsToSvg = function() {
+    var self = this;
+
     var groups = self.chart.append('g')
         .attr('class', 'groups');
 
@@ -204,6 +224,33 @@ var BarChart = (function(_super) {
               .style('fill', function(d, i) {
                 return self.config.color(i);
               });
+    }
+  };
+  // draw to canvas
+  BarChart.prototype.drawBarsToCanvas = function() {
+    var self = this;
+
+    for(var i in self.chartData) {
+      var d = self.chartData[i];
+
+      for(var j in d.values) {
+        var v = d.values[j];
+
+        // set pen style
+        self.pen.fillStyle = self.config.color(j);
+
+        if(self.config.type == 'stack') {
+          self.pen.fillRect(self.rangeX(d.name),
+              self.rangeY(v.sum),
+              self.rangeX.rangeBand(),
+              self.chartHeight - self.rangeY(v.value));
+        }else {
+          self.pen.fillRect(self.rangeX(d.name) + self.groupX(v.name),
+              self.rangeY(v.value),
+              self.groupX.rangeBand(),
+              self.chartHeight - self.rangeY(v.value));
+        }
+      }
     }
   };
 

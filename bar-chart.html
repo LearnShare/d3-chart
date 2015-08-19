@@ -52,7 +52,8 @@
         legendText: function(d, i) {
           return d;
         },
-        type: 'stack', // group|stack
+        canvas: true, // true|false
+        type: 'group', // group|stack
         sortData: function(a, b) {
           return b.sum - a.sum;
         }
