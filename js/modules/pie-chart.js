@@ -176,8 +176,11 @@ var PieChart = (function(_super) {
       self.pen.arc(c.x,
           c.y,
           self.chartR1,
-          (sum / 100 * 2 - 1 / 2) * Math.PI,
-          ((sum + d.percentage) / 100 * 2 - 1 / 2) * Math.PI);
+          (sum / 100 * 2 - 1 / 2)
+              * Math.PI,
+          ((sum + d.percentage) / 100 * 2 - 1 / 2
+              - self.config.anglePadding / 2)
+              * Math.PI);
       self.pen.lineTo(c.x, c.y);
       self.pen.fill();
 
