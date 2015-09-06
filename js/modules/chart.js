@@ -205,17 +205,11 @@ var Chart = (function() {
       var widthSum = 0,
           heightSum = 0,
           widthMax = 0,
-          heightMax = 0;
+          heightMax = 0,
+          vLines = 1;
       for(var i = 0; i < length; i++) {
         var item = legend.append('g')
-            .attr('class', 'item')
-            .attr('transform', function() {
-              return 'translate('
-                  + widthSum
-                  + ', '
-                  + heightSum
-                  + ')';
-            });
+            .attr('class', 'item');
 
         var rect = item.append('rect')
             .attr('width', self.config.legendItemWidth)
@@ -250,12 +244,24 @@ var Chart = (function() {
             + textElmtRect.width;
 
         if(self.config.legendDirection == 'horizontal') {
-          widthSum += itemWidth
+          var dx = itemWidth
               + self.config.legendItemMargin
                   * 2;
-          heightSum += 0;
-          widthMax = widthSum;
-          heightMax = self.config.legendItemHeight;
+          if((widthSum + itemWidth)
+              >= (self.config.width
+                - self.config.padding * 2)) {
+            vLines ++;
+            widthMax = widthSum;
+            widthSum = 0;
+            heightSum += self.config.legendItemHeight
+                + self.config.legendItemMargin
+                  * 2;
+          }
+          heightMax = (self.config.legendItemHeight
+              + self.config.legendItemMargin
+                * 2) * vLines
+              - self.config.legendItemMargin
+                * 2;
         }else {
           widthSum += 0;
           heightSum += self.config.legendItemHeight
@@ -263,7 +269,20 @@ var Chart = (function() {
           if(widthMax < itemWidth) {
             widthMax = itemWidth;
           }
-          heightMax = heightSum;
+          // heightMax = heightSum;
+        }
+        item.attr('transform', function() {
+            return 'translate('
+                + widthSum
+                + ', '
+                + heightSum
+                + ')';
+          });
+
+        widthSum += dx;
+        heightSum += 0;
+        if(widthSum > widthMax) {
+          widthMax = widthSum;
         }
       }
 
