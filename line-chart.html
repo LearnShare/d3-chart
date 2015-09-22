@@ -82,9 +82,9 @@
         chartMarginX: 30,
         chartMarginY: 20,
         canvas: true, // true|false
-        type: 'area', // line|area
+        type: 'line', // line|area
         stack: false,
-        line: 'step', // segment|curve|step
+        line: 'segment', // segment|curve|step
         marker: 'none', // none|dot|square|circle
         xFormat: 'time', // value|time
         timeFormat: '%Y-%m-%d %H:%M:%S',
@@ -100,7 +100,10 @@
           }
         },
         mouseEvent: true,
-        tipType: 'separate' // separate|single
+        tipType: 'single', // separate|single
+        tipText: function(i, d) {
+          return i + ' ' + d;
+        }
       });
 
       lineChart.setData([

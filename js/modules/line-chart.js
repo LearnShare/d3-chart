@@ -45,6 +45,13 @@ var LineChart = (function(_super) {
 
     self.config.tipType = config.tipType
         || 'separate';
+    self.config.tipText = function(i, d) {
+      return d;
+    };
+    if(config.tipText
+        && typeof config.tipText == 'function') {
+      self.config.tipText = config.tipText;
+    }
 
     self.xFormater = function(d) {
       return d;
@@ -734,21 +741,21 @@ var LineChart = (function(_super) {
       var textElmt = self.markerSingle.select('.text-'
           + i);
       
-      if(self.config.stack) {
-        textElmt.text(d.sum);
-      }else {
-        textElmt.text(d.y);
+      var num = d.sum;
+      if(!self.config.stack) {
+        num = d.y;
       }
+      textElmt.text(self.config.tipText(i, num));
     }else {
       var textElmt = self.markers[i].select('text'),
           rectElmt = self.markers[i].select('rect'),
           circleElmt = self.markers[i].select('circle');
       
-      if(self.config.stack) {
-        textElmt.text(d.sum);
-      }else {
-        textElmt.text(d.y);
+      var num = d.sum;
+      if(!self.config.stack) {
+        num = d.y;
       }
+      textElmt.text(self.config.tipText(i, num));
 
       var textElmtRect = textElmt[0][0].getBoundingClientRect();
 
