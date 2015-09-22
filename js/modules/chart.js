@@ -38,7 +38,7 @@ var Chart = (function() {
           || 20,
       subTitle: config.subTitle
           || '',
-      subTitleSize: config.titleSize
+      subTitleSize: config.subTitleSize
           || 12,
       titleAlign: config.titleAlign
           || 'center',
