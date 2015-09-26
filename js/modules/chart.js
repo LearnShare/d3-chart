@@ -94,6 +94,12 @@ var Chart = (function() {
     self.draw();
   }
 
+  Chart.prototype.setTitle = function(title) {
+    var self = this;
+
+    self.config.title = title;
+  };
+
   // set chartData
   Chart.prototype.setData = function(data) {
     var self = this;
