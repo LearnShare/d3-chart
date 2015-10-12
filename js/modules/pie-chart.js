@@ -115,7 +115,7 @@ var PieChart = (function(_super) {
     var self = this;
 
     self.drawPieOnSvg();
-    self.drawPieOnCanvas();
+    // self.drawPieOnCanvas();
   };
 
   // draw on svg
@@ -136,7 +136,6 @@ var PieChart = (function(_super) {
 
     self.chart.append('g')
         .attr('class', 'pie')
-        .style('opacity', 0.2)
         .attr('transform', 'translate('
             + self.chartWidth / 2
             + ', '

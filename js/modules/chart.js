@@ -212,7 +212,8 @@ var Chart = (function() {
           heightSum = 0,
           widthMax = 0,
           heightMax = 0,
-          vLines = 1;
+          vLines = 1,
+          dx = 0;
       for(var i = 0; i < length; i++) {
         var item = legend.append('g')
             .attr('class', 'item');
@@ -250,7 +251,7 @@ var Chart = (function() {
             + textElmtRect.width;
 
         if(self.config.legendDirection == 'horizontal') {
-          var dx = itemWidth
+          dx = itemWidth
               + self.config.legendItemMargin
                   * 2;
           if((widthSum + itemWidth)

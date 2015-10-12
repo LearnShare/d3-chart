@@ -286,7 +286,17 @@ var BarChart = (function(_super) {
         .orient('left')
         .ticks(yTickTimes)
         .tickFormat(function(d, i) {
-          return d;
+          var showD = '';
+          if(d >= 1 * 1000 * 1000 * 1000) {
+            showD = (d / 1000000000) + 'G';
+          }else if(d >= 1 * 1000 * 1000) {
+            showD = (d / 1000000) + 'M';
+          }else if(d >= 1 * 1000) {
+            showD = (d / 1000) + 'K';
+          }else {
+            showD = d;
+          }
+          return showD;
         });
 
     self.chart.append('g')
