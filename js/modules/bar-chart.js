@@ -21,6 +21,9 @@ var BarChart = (function(_super) {
 
     self.config.type = config.type
         || 'group';
+
+    self.config.tiltXText = config.tiltXText
+        || false;
         
     self.config.sortData = (config.sortData
           && (typeof config.sortData == 'function'))
@@ -281,6 +284,7 @@ var BarChart = (function(_super) {
         .orient('bottom')
         .ticks(xTickTimes)
         .tickFormat(self.config.xTick);
+
     self.axisY = d3.svg.axis()
         .scale(self.rangeY)
         .orient('left')
@@ -298,13 +302,18 @@ var BarChart = (function(_super) {
           }
           return showD;
         });
-
-    self.chart.append('g')
+        
+    var axisXGroup = self.chart.append('g')
         .attr('class', 'axis x')
         .attr('transform', 'translate(0, '
             + (self.chartHeight)
             + ')')
         .call(self.axisX);
+    if(self.config.tiltXText) {
+      axisXGroup.selectAll('text')
+          .style('text-anchor', 'start')
+          .attr('transform', 'rotate(40)');
+    }
     self.chart.append('g')
         .attr('class', 'axis y')
         .call(self.axisY);
