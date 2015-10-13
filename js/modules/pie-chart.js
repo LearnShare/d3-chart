@@ -153,6 +153,10 @@ var PieChart = (function(_super) {
         .style('fill', function(d, i) {
           return self.config.color(i);
         });
+
+    if(self.config.mouseEvent) {
+      self.addMouseEvents();
+    }
   };
   // draw on canvas
   PieChart.prototype.drawPieOnCanvas = function() {
@@ -195,6 +199,81 @@ var PieChart = (function(_super) {
         0,
         2 * Math.PI);
     self.pen.fill();
+  };
+  // add mouse events
+  PieChart.prototype.addMouseEvents = function() {
+    var self = this;
+
+    // arcs
+    var arcs = self.svg.selectAll('.arc > path')[0];
+
+    for(var i = 0; i < arcs.length; i++) {
+      var arc = arcs[i];
+
+      (function(arc, index) {
+        arc.addEventListener('mouseenter', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          self.highlightElements(index, true);
+        });
+      })(arc, i);
+
+      (function(arc, index) {
+        arc.addEventListener('mouseout', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          self.highlightElements(index, false);
+        });
+      })(arc, i);
+    }
+
+    // legends
+    var legends = self.svg.selectAll('.legend > .item')[0];
+
+    for(var i = 0; i < legends.length; i++) {
+      var legend = legends[i];
+
+      (function(legend, index) {
+        legend.addEventListener('mouseenter', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          self.highlightElements(index, true);
+        });
+      })(legend, i);
+
+      (function(legend, index) {
+        legend.addEventListener('mouseout', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          self.highlightElements(index, false);
+        });
+      })(legend, i);
+    }
+  };
+  // highlight elements
+  PieChart.prototype.highlightElements = function(index, enter) {
+    var self = this;
+
+    var arcs = self.svg.selectAll('.arc > path')[0];
+    var legends = self.svg.selectAll('.legend > .item')[0];
+
+    for(var i = 0; i < arcs.length; i++) {
+      var arc = d3.select(arcs[i]);
+      var legend = d3.select(legends[i]);
+
+      arc.attr('class', '');
+      legend.attr('class', 'item');
+
+      if(enter
+          && i == index) {
+        arc.attr('class', 'active');
+        legend.attr('class', 'item active');
+      }
+    }
   };
   
   return PieChart;
