@@ -1,0 +1,5 @@
+.idea/
+vendors/
+bower_components/
+node_modules/
+app-dist/
