@@ -3,11 +3,22 @@
 
 app.controller('MainController', [
   '$scope',
-  function($scope) {
+  '$location',
+  function($scope, $location) {
+    $scope.activeTab = '';
+
     $scope.navCollapse = true;
 
     $scope.toggleNavCollapse = function() {
       $scope.navCollapse = !$scope.navCollapse;
     };
+
+    $scope.$on('$routeChangeSuccess', function() {
+      var paths = $location.path().split('/');
+
+      if(paths.length >= 2) {
+        $scope.activeTab = paths[1];
+      }
+    });
   }
 ]);

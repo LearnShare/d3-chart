@@ -16,7 +16,14 @@
   <script src="../bower_components/d3/d3.js"></script>
   <script src="../bower_components/less/dist/less.js"></script>
 
+  <script src="../src/chart.js"></script>
+  <script src="../src/line-chart.js"></script>
+  <script src="../src/bar-chart.js"></script>
+  <script src="../src/pie-chart.js"></script>
+
   <script src="./js/app.js"></script>
+
+  <script src="./js/directives/chart.js"></script>
 
   <script src="./js/controllers/main.js"></script>
   <script src="./js/controllers/index.js"></script>
@@ -42,16 +49,20 @@
       <div class="collapse navbar-collapse bs-navbar-collapse"
           ng-class="{ collapse: navCollapse }">
         <ul class="nav navbar-nav">
-          <li>
+          <li
+              ng-class="{ active: activeTab == 'chart' }">
             <a href="#/chart">Chart</a>
           </li>
-          <li>
+          <li
+              ng-class="{ active: activeTab == 'line-chart' }">
             <a href="#/line-chart">LineChart</a>
           </li>
-          <li>
+          <li
+              ng-class="{ active: activeTab == 'bar-chart' }">
             <a href="#/bar-chart">BarChart</a>
           </li>
-          <li>
+          <li
+              ng-class="{ active: activeTab == 'pie-chart' }">
             <a href="#/pie-chart">PieChart</a>
           </li>
         </ul>

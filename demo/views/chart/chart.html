@@ -1,8 +1,134 @@
 <div class="container-fluid">
   <div class="col-sm-8 col-lg-9">
-    chart
+    <div class="chart" style="height: 400px;"
+        d3-chart
+        update="updateTime"
+        datas="chartDatas"
+        legends="chartLegends"
+        config="chartConfig"></div>
   </div>
   <div class="col-sm-4 col-lg-3">
-    config
+    <form class="form-vertical">
+      <div class="form-group">
+        <label for="padding">padding:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.padding === 1 }"
+                ng-click="updateConfig('padding', 1)">1</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.padding === 10 }"
+                ng-click="updateConfig('padding', 10)">10</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.padding === 30 }"
+                ng-click="updateConfig('padding', 30)">30</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="auto-resize">autoResize:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.autoResize === true }"
+                ng-click="updateConfig('autoResize', true)">true</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.autoResize === false }"
+                ng-click="updateConfig('autoResize', false)">false</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="title">title:</label>
+        <input type="text" class="form-control" id="title" name="title"
+            ng-model="edit.title">
+      </div>
+      <div class="form-group">
+        <label for="title-size">titleSize:</label>
+        <input type="number" class="form-control" id="title-size" name="title-size" min="0" max="30"
+            ng-model="edit.titleSize">
+      </div>
+      <div class="form-group">
+        <label for="sub-title">subTitle:</label>
+        <input type="text" class="form-control" id="sub-title" name="sub-title"
+            ng-model="edit.subTitle">
+      </div>
+      <div class="form-group">
+        <label for="sub-title-size">subTitleSize:</label>
+        <input type="number" class="form-control" id="sub-title-size" name="sub-title-size" min="0" max="30"
+            ng-model="edit.subTitleSize">
+      </div>
+      <div class="form-group">
+        <label for="title-align">titleAlign:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.titleAlign === 'left' }"
+                ng-click="updateConfig('titleAlign', 'left')">left</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.titleAlign === 'center' }"
+                ng-click="updateConfig('titleAlign', 'center')">center</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.titleAlign === 'right' }"
+                ng-click="updateConfig('titleAlign', 'right')">right</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="legend">legend:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legend === true }"
+                ng-click="updateConfig('legend', true)">true</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legend === false }"
+                ng-click="updateConfig('legend', false)">false</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="legend-direction">legendDirection:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legendDirection === 'horizontal' }"
+                ng-click="updateConfig('legendDirection', 'horizontal')">horizontal</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legendDirection === 'vertical' }"
+                ng-click="updateConfig('legendDirection', 'vertical')">vertical</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="legend-align">legendAlign:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legendAlign === 'left' }"
+                ng-click="updateConfig('legendAlign', 'left')">left</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legendAlign === 'center' }"
+                ng-click="updateConfig('legendAlign', 'center')">center</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legendAlign === 'right' }"
+                ng-click="updateConfig('legendAlign', 'right')">right</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="legend-vertical-align">legendVerticalAlign:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legendVerticalAlign === 'top' }"
+                ng-click="updateConfig('legendVerticalAlign', 'top')">top</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.legendVerticalAlign === 'bottom' }"
+                ng-click="updateConfig('legendVerticalAlign', 'bottom')">bottom</button>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 </div>

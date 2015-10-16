@@ -2,6 +2,24 @@ var Chart = (function() {
   function Chart(config) {
     var self = this;
 
+    self.updateConfig(config);
+
+    window.addEventListener('resize', function() {
+      if(self.config.autoResize) {
+        // size really changed
+        if(self.config.clientWidth != self.config.target.clientWidth
+            || self.config.clientHeight != self.config.target.clientHeight) {
+          self.resize();
+        }
+      }else {
+        return;
+      }
+    });
+  }
+
+  Chart.prototype.updateConfig = function(config) {
+    var self = this;
+
     // check config
     if(!config
         || !config.target) {
@@ -79,20 +97,10 @@ var Chart = (function() {
       }
     }
 
-    if(self.config.autoResize) {
-      window.addEventListener('resize', function() {
-        // size really changed
-        if(self.config.clientWidth != self.config.target.clientWidth
-            || self.config.clientHeight != self.config.target.clientHeight) {
-          self.resize();
-        }
-      });
-    }
-
     self.chartData = null;
 
     self.draw();
-  }
+  };
 
   Chart.prototype.setTitle = function(title) {
     var self = this;
@@ -101,8 +109,11 @@ var Chart = (function() {
   };
 
   // set chartData
-  Chart.prototype.setData = function(data) {
+  Chart.prototype.setData = function(data, legend) {
     var self = this;
+
+    self.chartData = data;
+    self.config.legendData = legend;
 
     self.draw();
   };
@@ -197,6 +208,7 @@ var Chart = (function() {
   Chart.prototype.drawLegend = function() {
     var self = this;
     
+    console.log(self.config.legend, self.config.legendData);
     // legend
     if(self.config.legend
         && self.config.legendData.length) {
