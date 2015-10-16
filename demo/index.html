@@ -44,26 +44,31 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a href="#/" class="navbar-brand">D3 Chart Demo</a>
+        <a href="#/" class="navbar-brand"
+            ng-click="collapseNav()">D3 Chart Demo</a>
       </div>
       <div class="collapse navbar-collapse bs-navbar-collapse"
           ng-class="{ collapse: navCollapse }">
         <ul class="nav navbar-nav">
           <li
               ng-class="{ active: activeTab == 'chart' }">
-            <a href="#/chart">Chart</a>
+            <a href="#/chart"
+                ng-click="collapseNav()">Chart</a>
           </li>
           <li
               ng-class="{ active: activeTab == 'line-chart' }">
-            <a href="#/line-chart">LineChart</a>
+            <a href="#/line-chart"
+                ng-click="collapseNav()">LineChart</a>
           </li>
           <li
               ng-class="{ active: activeTab == 'bar-chart' }">
-            <a href="#/bar-chart">BarChart</a>
+            <a href="#/bar-chart"
+                ng-click="collapseNav()">BarChart</a>
           </li>
           <li
               ng-class="{ active: activeTab == 'pie-chart' }">
-            <a href="#/pie-chart">PieChart</a>
+            <a href="#/pie-chart"
+                ng-click="collapseNav()">PieChart</a>
           </li>
         </ul>
       </div>

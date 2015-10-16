@@ -13,6 +13,10 @@ app.controller('MainController', [
       $scope.navCollapse = !$scope.navCollapse;
     };
 
+    $scope.collapseNav = function() {
+      $scope.navCollapse = true;
+    };
+
     $scope.$on('$routeChangeSuccess', function() {
       var paths = $location.path().split('/');
 
