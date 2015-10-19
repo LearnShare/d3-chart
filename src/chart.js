@@ -2,24 +2,6 @@ var Chart = (function() {
   function Chart(config) {
     var self = this;
 
-    self.updateConfig(config);
-
-    window.addEventListener('resize', function() {
-      if(self.config.autoResize) {
-        // size really changed
-        if(self.config.clientWidth != self.config.target.clientWidth
-            || self.config.clientHeight != self.config.target.clientHeight) {
-          self.resize();
-        }
-      }else {
-        return;
-      }
-    });
-  }
-
-  Chart.prototype.updateConfig = function(config) {
-    var self = this;
-
     // check config
     if(!config
         || !config.target) {
@@ -84,23 +66,27 @@ var Chart = (function() {
     };
 
     // title dy
-    self.titleDy = self.config.padding
-        + self.config.titleSize;
+    self.titleDy = 0;
 
     // y of title bottom
     self.titleYMax = 0;
-    if(self.config.title.length) {
-      self.titleYMax = self.titleDy
-        + self.config.padding; // as marginBottom of title
-      if(self.config.subTitle.length) {
-        self.titleYMax += self.config.subTitleSize;
+
+    window.addEventListener('resize', function() {
+      if(self.config.autoResize) {
+        // size really changed
+        if(self.config.clientWidth != self.config.target.clientWidth
+            || self.config.clientHeight != self.config.target.clientHeight) {
+          self.resize();
+        }
+      }else {
+        return;
       }
-    }
+    });
 
     self.chartData = null;
 
     self.draw();
-  };
+  }
 
   Chart.prototype.setTitle = function(title) {
     var self = this;
@@ -164,6 +150,9 @@ var Chart = (function() {
       return;
     }
 
+    self.titleDy = self.config.padding
+        + self.config.titleSize;
+
     // title start x
     var titleX = 0;
     // title align left
@@ -207,8 +196,17 @@ var Chart = (function() {
   };
   Chart.prototype.drawLegend = function() {
     var self = this;
+
+    if(self.config.title.length) {
+      self.titleYMax = self.titleDy;
+      if(self.config.subTitle.length) {
+        self.titleYMax += self.config.subTitleSize;
+      }
+      self.titleYMax += 20;
+    }else {
+      self.titleYMax = self.config.padding;
+    }
     
-    console.log(self.config.legend, self.config.legendData);
     // legend
     if(self.config.legend
         && self.config.legendData.length) {
@@ -288,7 +286,8 @@ var Chart = (function() {
           if(widthMax < itemWidth) {
             widthMax = itemWidth;
           }
-          // heightMax = heightSum;
+          heightMax = heightSum
+              + self.config.legendItemHeight;
         }
         item.attr('transform', function() {
             return 'translate('
@@ -323,8 +322,7 @@ var Chart = (function() {
             - self.config.padding
             - heightMax;
       }else {
-        legendTranslateY = self.titleYMax
-            + self.config.padding;
+        legendTranslateY = self.titleYMax;
       }
 
       legend.attr('transform', 'translate('

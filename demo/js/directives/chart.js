@@ -22,7 +22,11 @@ app.directive('d3Chart', [
         }, true);
 
         scope.updateChart = function() {
-          scope.chart.updateConfig(scope.config);
+          for(var attr in scope.config) {
+            var value = scope.config[attr];
+
+            scope.chart.config[attr] = value;
+          }
 
           var datas = new Object();
           datas = scope.datas;
