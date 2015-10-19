@@ -1,8 +1,130 @@
 <div class="container-fluid">
   <div class="col-sm-8 col-lg-9">
-    chart
+    <div class="chart" style="height: 400px;"
+        d3-line-chart
+        update="updateTime"
+        datas="chartDatas"
+        legends="chartLegends"
+        config="chartConfig"></div>
   </div>
   <div class="col-sm-4 col-lg-3">
-    config
+    <form class="form-vertical">
+      <div class="form-group">
+        <label for="chart-margin-x">chartMarginX:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginX === 10 }"
+                ng-click="updateConfig('chartMarginX', 10)">10</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginX === 30 }"
+                ng-click="updateConfig('chartMarginX', 30)">30</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginX === 50 }"
+                ng-click="updateConfig('chartMarginX', 50)">50</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <form class="form-vertical">
+      <div class="form-group">
+        <label for="chart-margin-y">chartMarginY:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginY === 10 }"
+                ng-click="updateConfig('chartMarginY', 10)">10</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginY === 20 }"
+                ng-click="updateConfig('chartMarginY', 20)">20</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginY === 30 }"
+                ng-click="updateConfig('chartMarginY', 30)">30</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="canvas">canvas:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.canvas === true }"
+                ng-click="updateConfig('canvas', true)">true</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.canvas === false }"
+                ng-click="updateConfig('canvas', false)">false</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="type">type:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.type === 'line' }"
+                ng-click="updateConfig('type', 'line')">line</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.type === 'area' }"
+                ng-click="updateConfig('type', 'area')">area</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="stack">stack:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.stack === true }"
+                ng-click="updateConfig('stack', true)">true</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.stack === false }"
+                ng-click="updateConfig('stack', false)">false</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="line">line:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.line === 'segment' }"
+                ng-click="updateConfig('line', 'segment')">segment</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.line === 'curve' }"
+                ng-click="updateConfig('line', 'curve')">curve</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.line === 'step' }"
+                ng-click="updateConfig('line', 'step')">step</button>
+          </div>
+        </div>
+        <p class="help-block">line='curve' not work when canvas=true.</p>
+      </div>
+      <div class="form-group">
+        <label for="mouse-event">mouseEvent:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.mouseEvent === true }"
+                ng-click="updateConfig('mouseEvent', true)">true</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.mouseEvent === false }"
+                ng-click="updateConfig('mouseEvent', false)">false</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tip-type">tipType:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.tipType === 'separate' }"
+                ng-click="updateConfig('tipType', 'separate')">separate</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.tipType === 'single' }"
+                ng-click="updateConfig('tipType', 'single')">single</button>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 </div>

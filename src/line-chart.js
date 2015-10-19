@@ -28,7 +28,7 @@ var LineChart = (function(_super) {
     var xTick = function(d) {
       return d;
     };
-    if(self.config.xFormat == 'time') {
+    if(self.config.xFormat == 'date') {
       xTick = d3.time.format('%H:%M');
     }
     self.config.xTick = config.xTick
@@ -52,13 +52,6 @@ var LineChart = (function(_super) {
         && typeof config.tipText == 'function') {
       self.config.tipText = config.tipText;
     }
-
-    self.xFormater = function(d) {
-      return d;
-    };
-    if(self.config.xFormat == 'time') {
-      self.xFormater = d3.time.format(self.config.timeFormat).parse;
-    }
   }
 
   // set chartData
@@ -78,8 +71,6 @@ var LineChart = (function(_super) {
 
       for(var j in data) {
         var d = data[j];
-
-        d.x = self.xFormater(d.x);
 
         if(self.dataX.indexOf(d.x) == -1) {
           self.dataX.push(d.x);
@@ -180,7 +171,7 @@ var LineChart = (function(_super) {
         .domain(d3.extent(self.dataX, function(d){
           return d;
         }));
-    if(self.config.xFormat == 'time') {
+    if(self.config.xFormat == 'date') {
       self.rangeX = d3.time.scale()
           .range([0, self.chartWidth])
           .domain(d3.extent(self.dataX, function(d){
@@ -330,17 +321,22 @@ var LineChart = (function(_super) {
         dr = data[j + 1];
       }
 
+      var dy = d.y;
+      if(self.config.stack) {
+        dy = d.sum;
+      }
+
       if(self.config.line == 'segment'
           || self.config.line == 'curve') {
         points.push({
           x: self.rangeX(d.x),
-          y: self.rangeY(d.y)
+          y: self.rangeY(dy)
         });
       }else if(self.config.line == 'step') {
         if(j <= 0) {
           points.push({
             x: self.rangeX(d.x),
-            y: self.rangeY(d.y)
+            y: self.rangeY(dy)
           });
         }else {
           points.push({
@@ -349,13 +345,13 @@ var LineChart = (function(_super) {
           });
           points.push({
             x: (self.rangeX(d.x) + self.rangeX(dl.x)) / 2,
-            y: self.rangeY(d.y)
+            y: self.rangeY(dy)
           });
 
           if(j >= data.length - 1) {
             points.push({
               x: self.rangeX(d.x),
-              y: self.rangeY(d.y)
+              y: self.rangeY(dy)
             });
           }
         }
@@ -627,7 +623,7 @@ var LineChart = (function(_super) {
     var formater = function(d) {
       return d;
     };
-    if(self.config.xFormat == 'time') {
+    if(self.config.xFormat == 'date') {
       formater = d3.time.format(self.config.timeFormat);
     }
 
