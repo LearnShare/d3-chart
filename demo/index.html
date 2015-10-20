@@ -4,6 +4,7 @@
     ng-controller="MainController">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>D3 Chart Demo</title>
 
   <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
@@ -72,6 +73,14 @@
               ng-class="{ active: activeTab == 'pie-chart' }">
             <a href="#/pie-chart"
                 ng-click="collapseNav()">PieChart</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="https://github.com/LearnShare/d3-chart" target="_blank">
+              <i class="fa fa-github"></i>
+              <span>on Github</span>
+            </a>
           </li>
         </ul>
       </div>

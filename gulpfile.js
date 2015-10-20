@@ -49,7 +49,7 @@ gulp.task('htmlmin-index', ['clean'], function() {
 // less to css, css concat and min
 gulp.task('less-css', ['clean'], function() {
   return gulp.src([
-        'bower_components/fontawesome/css/font-awesome.css',
+        'bower_components/font-awesome/css/font-awesome.css',
         'bower_components/bootstrap/dist/css/bootstrap.css',
         'demo/css/main.less'
       ])
@@ -69,7 +69,7 @@ gulp.task('copy-images', ['clean'], function(){
 gulp.task('copy-fonts', ['clean'], function(){
   return gulp.src([
       'bower_components/bootstrap/fonts/*.*',
-      'bower_components/fontawesome/fonts/*.*'
+      'bower_components/font-awesome/fonts/*.*'
     ])
     .pipe(gulp.dest('dist/fonts/'));
 });
