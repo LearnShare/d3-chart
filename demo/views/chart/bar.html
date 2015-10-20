@@ -1,8 +1,85 @@
 <div class="container-fluid">
   <div class="col-sm-8 col-lg-9">
-    chart
+    <div class="chart" style="height: 400px;"
+        d3-bar-chart
+        update="updateTime"
+        datas="chartDatas"
+        legends="chartLegends"
+        config="chartConfig"></div>
   </div>
   <div class="col-sm-4 col-lg-3">
-    config
+    <form class="form-vertical">
+      <div class="form-group">
+        <label for="chart-margin-x">chartMarginX:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginX === 10 }"
+                ng-click="updateConfig('chartMarginX', 10)">10</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginX === 30 }"
+                ng-click="updateConfig('chartMarginX', 30)">30</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginX === 50 }"
+                ng-click="updateConfig('chartMarginX', 50)">50</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="chart-margin-y">chartMarginY:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginY === 10 }"
+                ng-click="updateConfig('chartMarginY', 10)">10</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginY === 20 }"
+                ng-click="updateConfig('chartMarginY', 20)">20</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.chartMarginY === 30 }"
+                ng-click="updateConfig('chartMarginY', 30)">30</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="canvas">canvas:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.canvas === true }"
+                ng-click="updateConfig('canvas', true)">true</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.canvas === false }"
+                ng-click="updateConfig('canvas', false)">false</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="type">type:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.type === 'group' }"
+                ng-click="updateConfig('type', 'group')">group</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.type === 'stack' }"
+                ng-click="updateConfig('type', 'stack')">stack</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tilt-x-text">tiltXText:</label>
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.tiltXText === true }"
+                ng-click="updateConfig('tiltXText', true)">true</button>
+            <button class="btn btn-default"
+                ng-class="{ active: chartConfig.tiltXText === false }"
+                ng-click="updateConfig('tiltXText', false)">false</button>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
