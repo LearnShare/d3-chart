@@ -311,19 +311,20 @@ var LineChart = (function(_super) {
       });
     }
     for(var j in data) {
-      var dl = null;
+      var dl = {
+        y: 0,
+        sum: 0
+      };
       var d = data[j];
-      var dr = null;
       if(j > 0) {
         dl = data[j - 1];
       }
-      if(j < data.length - 1) {
-        dr = data[j + 1];
-      }
 
-      var dy = d.y;
+      var dy = d.y,
+          dly = dl.y;
       if(self.config.stack) {
         dy = d.sum;
+        dly = dl.sum;
       }
 
       if(self.config.line == 'segment'
@@ -341,7 +342,7 @@ var LineChart = (function(_super) {
         }else {
           points.push({
             x: (self.rangeX(d.x) + self.rangeX(dl.x)) / 2,
-            y: self.rangeY(dl.y)
+            y: self.rangeY(dly)
           });
           points.push({
             x: (self.rangeX(d.x) + self.rangeX(dl.x)) / 2,
