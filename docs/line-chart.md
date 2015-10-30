@@ -36,6 +36,10 @@ config.chartMarginY = 30;
 
 >开启该选项，将大幅度提高数据量较多时（数千个点及以上）的绘图效率。
 
+```js
+config.canvas = true;
+```
+
 ### xFormat
 
 设置数据点 x 的格式：
