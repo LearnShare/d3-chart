@@ -61,7 +61,7 @@ config.tiltXText = true;
 
 ### sortData
 
-通过传入的函数对柱状图进行排序。默认不排序。
+通过传入的函数对数据进行排序。
 
 ```js
 config.sortData = function(a, b) {
