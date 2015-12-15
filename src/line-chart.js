@@ -36,6 +36,8 @@ var LineChart = (function(_super) {
 
     self.config.type = config.type
         || 'line';
+    self.config.fillOpacity = config.fillOpacity
+        || 0.7;
     self.config.stack = config.stack
         || false;
     self.config.line = config.line
@@ -295,7 +297,7 @@ var LineChart = (function(_super) {
             })
             .style('opacity', function() {
               if(pathFill) {
-                return 0.7;
+                return self.config.fillOpacity;
               }
             });
   };
@@ -380,7 +382,9 @@ var LineChart = (function(_super) {
         + rgb.g
         + ', '
         + rgb.b
-        + ', 0.7)';
+        + ', '
+        + self.config.fillOpacity
+        + ')';
 
     self.pen.beginPath();
     for(var k in points) {

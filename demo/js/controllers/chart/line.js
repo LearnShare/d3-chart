@@ -15,7 +15,7 @@ app.controller('LineChartController', [
       title: 'D3 Line Chart',
       subTitle: 'by Tag.Hu',
       legend: true,
-
+      fillOpacity: 0.4,
       chartMarginX: 30,
       chartMarginY: 20,
       canvas: true, // true|false
