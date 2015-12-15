@@ -202,7 +202,8 @@ var LineChart = (function(_super) {
   LineChart.prototype.drawLines = function() {
     var self = this;
 
-    for(var i in self.chartData) {
+    var len = self.chartData.length;
+    for(var i = len - 1; i >= 0; i--) {
       var data = self.chartData[i];
 
       if(data.length) {
@@ -743,7 +744,7 @@ var LineChart = (function(_super) {
       //   num = d.y;
       // }
       var num = d.y;
-      
+
       textElmt.text(self.config.tipText(i, num));
     }else {
       var textElmt = self.markers[i].select('text'),
