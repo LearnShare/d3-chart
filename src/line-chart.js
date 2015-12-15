@@ -738,20 +738,24 @@ var LineChart = (function(_super) {
       var textElmt = self.markerSingle.select('.text-'
           + i);
       
-      var num = d.sum;
-      if(!self.config.stack) {
-        num = d.y;
-      }
+      // var num = d.sum;
+      // if(!self.config.stack) {
+      //   num = d.y;
+      // }
+      var num = d.y;
+      
       textElmt.text(self.config.tipText(i, num));
     }else {
       var textElmt = self.markers[i].select('text'),
           rectElmt = self.markers[i].select('rect'),
           circleElmt = self.markers[i].select('circle');
       
-      var num = d.sum;
-      if(!self.config.stack) {
-        num = d.y;
-      }
+      // var num = d.sum;
+      // if(!self.config.stack) {
+      //   num = d.y;
+      // }
+      var num = d.y;
+      
       textElmt.text(self.config.tipText(i, num));
 
       var textElmtRect = textElmt[0][0].getBoundingClientRect();
