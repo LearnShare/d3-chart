@@ -8,20 +8,23 @@ var Chart = (function() {
       return;
     }
 
+    var colors = config.colors
+        || [
+      '#5D9CEC',
+      '#656D78',
+      '#A0D468',
+      '#CCD1D9',
+      '#4FC1E9',
+      '#48CFAD',
+      '#AC92EC',
+      '#E6E9ED'
+    ];
+
     self.config = {
       target: config.target,
 
       color: d3.scale.ordinal()
-          .range([
-            '#5D9CEC',
-            '#656D78',
-            '#A0D468',
-            '#CCD1D9',
-            '#4FC1E9',
-            '#48CFAD',
-            '#AC92EC',
-            '#E6E9ED'
-          ]),
+          .range(colors),
 
       width: config.width
           || config.target.clientWidth,
