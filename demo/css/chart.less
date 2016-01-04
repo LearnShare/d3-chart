@@ -39,6 +39,15 @@ line.marker.line {
 .marker.single text {
   text-anchor: start;
 }
+// bar-chart
+g.bar.group {
+  text {
+    display: none;
+  }
+  &:hover text {
+    display: block;
+  }
+}
 // pie-chart
 .arc > path.active,
 .legend > .item.active rect {

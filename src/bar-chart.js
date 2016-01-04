@@ -191,42 +191,82 @@ var BarChart = (function(_super) {
             });
 
     if(self.config.type == 'stack') {
-      group.selectAll('.bar')
+      group.append('text')
+          .attr('y', function(d) {
+            return self.rangeY(d.sum);
+          })
+          .attr('dx', self.rangeX.rangeBand() / 2)
+          .attr('dy', -2)
+          .style('text-anchor', 'middle')
+          .text(function(d) {
+            return d.sum;
+          });
+
+      var bars = group.selectAll('.bar')
           .data(function(d) {
             return d.values;
           })
-          .enter().append('rect')
-              .attr('class', 'bar')
-              .attr('y', function(d) {
-                return self.rangeY(d.sum);
-              })
-              .attr('width', self.rangeX.rangeBand())
-              .attr('height', function(d) {
-                return self.chartHeight - self.rangeY(d.value);
-              })
-              .style('fill', function(d, i) {
-                return self.config.color(i);
-              });
+          .enter().append('g')
+              .attr('class', 'bar group');
+
+      bars.append('rect')
+        .attr('y', function(d) {
+          return self.rangeY(d.sum);
+        })
+        .attr('width', self.rangeX.rangeBand())
+        .attr('height', function(d) {
+          return self.chartHeight - self.rangeY(d.value);
+        })
+        .style('fill', function(d, i) {
+          return self.config.color(i);
+        });
+      bars.append('text')
+        .attr('y', function(d) {
+          return self.rangeY(d.sum);
+        })
+        .attr('dx', self.rangeX.rangeBand() / 2)
+        .attr('dy', 12)
+        .style('text-anchor', 'middle')
+        .style('fill', '#FFF')
+        .text(function(d) {
+          return d.value;
+        });
     }else { // group as default
-      group.selectAll('.bar')
+      var bars = group.selectAll('.bar')
           .data(function(d) {
             return d.values;
           })
-          .enter().append('rect')
-              .attr('class', 'bar')
-              .attr('x', function(d) {
-                return self.groupX(d.name);
-              })
-              .attr('y', function(d) {
-                return self.rangeY(d.value);
-              })
-              .attr('width', self.groupX.rangeBand())
-              .attr('height', function(d) {
-                return self.chartHeight - self.rangeY(d.value);
-              })
-              .style('fill', function(d, i) {
-                return self.config.color(i);
-              });
+          .enter().append('g')
+              .attr('class', 'bar');
+
+      bars.append('rect')
+          .attr('class', 'bar')
+          .attr('x', function(d) {
+            return self.groupX(d.name);
+          })
+          .attr('y', function(d) {
+            return self.rangeY(d.value);
+          })
+          .attr('width', self.groupX.rangeBand())
+          .attr('height', function(d) {
+            return self.chartHeight - self.rangeY(d.value);
+          })
+          .style('fill', function(d, i) {
+            return self.config.color(i);
+          });
+      bars.append('text')
+        .attr('x', function(d) {
+          return self.groupX(d.name);
+        })
+        .attr('y', function(d) {
+          return self.rangeY(d.value);
+        })
+        .attr('dx', self.groupX.rangeBand() / 2)
+        .attr('dy', -2)
+        .style('text-anchor', 'middle')
+        .text(function(d) {
+          return d.value;
+        });
     }
   };
   // draw to canvas

@@ -14,7 +14,7 @@ app.controller('BarChartController', [
 
       chartMarginX: 30,
       chartMarginY: 20,
-      canvas: true, // true|false
+      canvas: false, // true|false
       type: 'group', // group|stack
       tiltXText: false, // false|true
       sortData: function(a, b) {
