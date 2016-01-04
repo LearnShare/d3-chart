@@ -40,12 +40,21 @@ line.marker.line {
   text-anchor: start;
 }
 // bar-chart
-g.bar.group {
-  text {
-    display: none;
+g.bar {
+  &:hover {
+    rect {
+      transition: opacity 0.3s;
+      opacity: 0.8;
+    }
   }
-  &:hover text {
-    display: block;
+  &.group {
+    text {
+      transition: opacity 0.3s;
+      opacity: 0;
+    }
+    &:hover text {
+      opacity: 1;
+    }
   }
 }
 // pie-chart
