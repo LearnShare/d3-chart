@@ -589,6 +589,11 @@ var LineChart = (function(_super) {
 
     var index = self.bisectX(self.chartData[0], x, 1);
 
+    if(index < 0
+        || index >= self.chartData[0].length) {
+      return;
+    }
+
     var d = (x - self.chartData[0][index - 1].x
           > self.chartData[0][index].x - x)
         ? self.chartData[0][index]
