@@ -57,7 +57,7 @@ var LineChart = (function(_super) {
   }
 
   // set chartData
-  LineChart.prototype.setData = function(data, legendData) {
+  LineChart.prototype.setData = function(data, legendData, marksData) {
     var self = this;
 
     self.chartData = data;
@@ -103,6 +103,14 @@ var LineChart = (function(_super) {
 
     if(legendData) {
       self.config.legendData = legendData;
+    }
+
+    if(legendData) {
+      self.config.legendData = legendData;
+    }
+
+    if(marksData) {
+      self.config.marksData = marksData;
     }
 
     if(self.config.yFormat == 'percentage') {
@@ -194,6 +202,10 @@ var LineChart = (function(_super) {
 
     self.drawLines();
     self.drawAxises();
+
+    if(self.config.marksData) {
+      self.drawMarks();
+    }
 
     if(self.config.mouseEvent) {
       self.drawOverlay();
@@ -459,6 +471,40 @@ var LineChart = (function(_super) {
         .call(self.axisY);
   };
 
+  // draw marks
+  LineChart.prototype.drawMarks = function() {
+    var self = this;
+
+    if(!self.config.marksData.length) {
+      return;
+    }
+    
+    var markLayer = self.svg.append('g')
+        .attr('class', 'markLayer')
+        .attr('transform', 'translate('
+            + (self.config.padding
+                + self.config.chartMarginX)
+            + ', '
+            + self.chartTranslateY
+            + ')');
+
+    var group = markLayer.selectAll('.markLayer')
+        .data(self.config.marksData)
+        .enter().append('g')
+            .attr('class', 'group');
+
+    group.append('line')
+        .attr('class', 'marker line')
+        .attr('x1', function(d) {
+          return self.rangeX(d.x);
+        })
+        .attr('y1', 0)
+        .attr('x2', function(d) {
+          return self.rangeX(d.x);
+        })
+        .attr('y2', self.chartHeight);
+  };
+
   // draw overlay
   LineChart.prototype.drawOverlay = function() {
     var self = this;
@@ -523,6 +569,20 @@ var LineChart = (function(_super) {
             .style('fill', '#333')
             .style('font-size', '12px');
       }
+
+      self.markerSingle.append('text')
+          .attr('class', 'text-mark')
+          .attr('dx', 0)
+          .attr('dy', self.config.legendItemHeight - 3 + 10)
+          .style('fill', '#333')
+          .style('font-size', self.config.legendItemHeight - 4)
+          .style('display', 'none')
+          .attr('transform', function(d) {
+            return 'translate(10, '
+                + (length * (self.config.legendItemHeight
+                    + self.config.legendItemMargin) + 25)
+                + ')';
+          });;
     }else { // separate tips
       self.markers = [];
 
@@ -622,9 +682,25 @@ var LineChart = (function(_super) {
     }
   };
 
+  LineChart.prototype.getMarkText = function(x) {
+    var self = this;
+
+    for(var i in self.config.marksData) {
+      var d = self.config.marksData[i];
+
+      if(d.x.getTime() == x.getTime()) {
+        return d.text;
+      }
+    }
+
+    return;
+  };
+
   // markX @ (d.x, d.y)
   LineChart.prototype.moveMarkerX = function(d) {
     var self = this;
+
+    var markText = self.getMarkText(d.x);
 
     var point = {
       x: self.rangeX(d.x),
@@ -640,8 +716,13 @@ var LineChart = (function(_super) {
 
     if(self.config.tipType == 'single') {
       var textElmt = self.markerSingle.select('.text-x'),
+          markTextElmt = self.markerSingle.select('.text-mark'),
           rectElmt = self.markerSingle.select('.bg-rect');
       textElmt.text(formater(d.x));
+
+      if(markText) {
+        markTextElmt.text(markText);
+      }
 
       var rectWidth = 0,
           rectHeight = 0;
@@ -652,8 +733,22 @@ var LineChart = (function(_super) {
         rectWidth = textElmtRect.width;
       }
 
+      if(markText) {
+        var markTextElmtRect = markTextElmt[0][0].getBoundingClientRect();
+
+        if(rectWidth < markTextElmtRect.width) {
+          rectWidth = markTextElmtRect.width;
+        }
+
+        rectHeight += 20;
+
+        markTextElmt.style('display', 'block');
+      }else {
+        markTextElmt.style('display', 'none');
+      }
+
       var length = self.chartData.length;
-      rectHeight = (length + 1)
+      rectHeight += (length + 1)
           * (self.config.legendItemHeight
             + self.config.legendItemMargin)
           + 20;

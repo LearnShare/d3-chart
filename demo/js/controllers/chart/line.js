@@ -36,7 +36,7 @@ app.controller('LineChartController', [
         }
       },
       mouseEvent: true,
-      tipType: 'separate', // separate|single
+      tipType: 'single', // separate|single
       tipText: function(i, d) {
         return $scope.chartLegends[i] + ': ' + d;
       }
@@ -144,6 +144,17 @@ app.controller('LineChartController', [
         y: 8
       }]
     ];
+
+    $scope.chartMarks = [{
+      x: new Date('2015-06-11T16:28:00+08:00'),
+      text: 'aaa'
+    }, {
+      x: new Date('2015-06-13T16:30:00+08:00'),
+      text: 'bbb'
+    }, {
+      x: new Date('2015-06-15T16:42:00+08:00'),
+      text: 'ccc'
+    }];
 
     $scope.chartLegends = [
       'A',

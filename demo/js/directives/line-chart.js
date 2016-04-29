@@ -9,6 +9,7 @@ app.directive('d3LineChart', [
       scope: {
         update: '=update',
         datas: '=datas',
+        marks: '=marks',
         legends: '=legends',
         config: '=config'
       },
@@ -31,10 +32,13 @@ app.directive('d3LineChart', [
           var datas = new Object();
           datas = scope.datas;
 
+          var marks = new Object();
+          marks = scope.marks;
+
           var legends = new Object();
           legends = scope.legends;
 
-          scope.lineChart.setData(datas, legends);
+          scope.lineChart.setData(datas, legends, marks);
         };
       }
     };
