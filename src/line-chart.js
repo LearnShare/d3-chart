@@ -46,7 +46,7 @@ var LineChart = (function(_super) {
         || 'none';
 
     self.config.markLines = config.markLines
-        || true;
+        || false;
     self.config.markRange = config.markRange
         || false;
 
