@@ -36,6 +36,8 @@ app.controller('LineChartController', [
         }
       },
       mouseEvent: true,
+      markLines: true, // true|false
+      markRange: true, // true|false
       tipType: 'single', // separate|single
       tipText: function(i, d) {
         return $scope.chartLegends[i] + ': ' + d;

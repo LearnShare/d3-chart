@@ -45,6 +45,11 @@ var LineChart = (function(_super) {
     self.config.marker = config.marker
         || 'none';
 
+    self.config.markLines = config.markLines
+        || true;
+    self.config.markRange = config.markRange
+        || false;
+
     self.config.tipType = config.tipType
         || 'separate';
     self.config.tipText = function(i, d) {
@@ -493,8 +498,14 @@ var LineChart = (function(_super) {
         .enter().append('g')
             .attr('class', 'group');
 
+    var lineClasses = 'marker line';
+
+    if(!self.config.markLines) {
+      lineClasses += ' hide';
+    }
+
     group.append('line')
-        .attr('class', 'marker line')
+        .attr('class', lineClasses)
         .attr('x1', function(d) {
           return self.rangeX(d.x);
         })
