@@ -699,7 +699,16 @@ var LineChart = (function(_super) {
     for(var i in self.config.marksData) {
       var d = self.config.marksData[i];
 
-      if(d.x.getTime() == x.getTime()) {
+      if(self.config.markRange) {
+        if((d.x.getTime() > x.getTime()
+            && i > 0
+            && self.config.marksData[i - 1].x.getTime() <= x.getTime())) {
+          return self.config.marksData[i - 1].text;
+        }else if(d.x.getTime() <= x.getTime()
+                && i == self.config.marksData.length - 1) {
+          return d.text;
+        }
+      }else if(d.x.getTime() == x.getTime()) {
         return d.text;
       }
     }
